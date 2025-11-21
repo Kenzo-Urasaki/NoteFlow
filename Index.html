@@ -5,143 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NoteFlow</title>
     <link rel="stylesheet" href="style.css">
-    <style>
-        :root{
-            --nav-width:220px;
-            --nav-collapsed:48px;
-            --header-h:100px;
-            --footer-h:32px;
-            --bg:#f5f7fb;
-            --transition-fast: 280ms cubic-bezier(.2,.9,.2,1);
-        }
-        * { box-sizing:border-box; }
-        html,body{ height:100%; margin:0; font-family: sans-serif; }
-        .layout{
-            min-height:100vh;
-            display:grid;
-            /* grid keeps two columns, nav will control its own width to allow smooth width transition */
-            grid-template-columns: auto 1fr;
-            grid-template-rows: var(--header-h) 1fr var(--footer-h);
-            background:var(--bg);
-            position:relative;
-        }
-
-        header{
-            grid-column:1/-1;
-            height:var(--header-h);
-            background:#fff;
-            display:flex;
-            align-items:center;
-            padding:0 16px;
-            box-shadow:0 1px 0 rgba(0,0,0,.06);
-            z-index:2;
-            font-family: 'Bigbesty', sans-serif ;
-            font-size: 7vh;
-        }
-
-        /* nav width will animate */
-        nav{
-            grid-row:2/3;
-            background:#fff;
-            padding:16px;
-            border-right:1px solid #e6e9ef;
-            height:100%;
-            overflow:visible;
-            width:var(--nav-width);
-            transition: width var(--transition-fast), border-right-color .18s, padding .18s;
-            box-sizing:border-box;
-        }
-        /* estado "fechado" da sidebar: reduz largura e esconde itens */
-        .layout.collapsed nav{
-            width:var(--nav-collapsed);
-            padding:8px 6px;
-            border-right-color:transparent;
-        }
-        /* animação dos itens internos */
-        nav ul{
-            list-style:none;
-            padding:0;
-            margin:0;
-            display:flex;
-            flex-direction:column;
-            gap:8px;
-            transition: opacity .18s, transform var(--transition-fast);
-            transform-origin: left center;
-        }
-        .layout.collapsed nav ul{
-            opacity:0;
-            visibility:hidden;
-            height:0;
-            pointer-events:none;
-            transform: translateX(-6px) scale(.98);
-        }
-        .layout:not(.collapsed) nav ul{
-            opacity:1;
-            visibility:visible;
-            transform: translateX(0) scale(1);
-        }
-
-        main{
-            grid-row:2/3;
-            padding:24px;
-            overflow:auto;
-            background:linear-gradient(180deg,#fff,#fbfdff);
-            transition: margin-left var(--transition-fast);
-        }
-        footer{
-            grid-column:1/-1;
-            height:var(--footer-h);
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            font-size:12px;
-            color:#666;
-            background:#fff;
-            border-top:1px solid #e6e9ef;
-        }
-        nav a{display:block;padding:8px 10px;border-radius:6px;color:#1b2b3a;text-decoration:none}
-        nav a:hover{background:#eef4ff}
-        .brand{font-weight:700}
-
-        /* botão de abrir/fechar */
-        .nav-toggle{
-            position:absolute;
-            top: calc(var(--header-h) + 16px);
-            left: calc(var(--nav-width) - 12px);
-            width:36px;
-            height:36px;
-            border-radius:18px;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            background:#fff;
-            border:1px solid #e6e9ef;
-            cursor:pointer;
-            box-shadow:0 2px 6px rgba(0,0,0,.06);
-            transition: left var(--transition-fast), transform .18s;
-            z-index:5;
-            padding:0;
-            font-size:16px;
-            line-height:1;
-        }
-        /* posiciona corretamente quando colapsado */
-        .layout.collapsed .nav-toggle{
-            left: calc(var(--nav-collapsed) - 12px);
-        }
-        .nav-toggle:focus{ outline:2px solid #cfe1ff; outline-offset:2px; }
-
-        @media (max-width:720px){
-            .layout{grid-template-columns:1fr;grid-template-rows:var(--header-h) auto 1fr var(--footer-h)}
-            nav{grid-row:2/3;border-right:0;border-bottom:1px solid #e6e9ef;display:flex;padding:8px;overflow:auto;width:100%}
-            nav ul{flex-direction:row;gap:12px}
-            main{grid-row:3/4;padding:16px}
-            .nav-toggle{ display:none; } /* esconder toggle em telas pequenas para usar o menu responsivo */
-            .layout.collapsed{ grid-template-columns: 1fr; } /* não colapsar no mobile */
-        }
-    </style>
 </head>
 <body>
-    <h1>penis grossos</h1>
     <div class="layout collapsed" id="layout">
         <header>
             <div class="brand">NoteFlow</div>
@@ -149,19 +14,21 @@
 
         <nav id="sidebar" aria-label="Menu principal" aria-hidden="true">
             <ul>
-                <li><a href="#">Início</a></li>
-                <li><a href="#">Notas</a></li>
-                <li><a href="#">Arquivos</a></li>
-                <li><a href="#">Configurações</a></li>
+                <li><a href="inicio.html">Início</a></li>
+                <li><a href="notas.html">Notas</a></li>
+                <li><a href="arquivos.html">Arquivos</a></li>
+                <li><a href="config.html">Configurações</a></li>
             </ul>
         </nav>
 
-        <!-- botão de abrir/fechar -->
         <button class="nav-toggle" id="navToggle" aria-controls="sidebar" aria-expanded="false" title="Abrir/fechar menu">›</button>
 
         <main>
-            <h1>Conteúdo principal</h1>
-            <p>Coloque aqui o conteúdo da sua página.</p>
+            <!-- Conteúdo carregado dinamicamente aqui -->
+            <article id="content" role="article">
+                <h1>Conteúdo principal</h1>
+                <p>Carregue uma página do menu.</p>
+            </article>
         </main>
 
         <footer>
@@ -170,27 +37,79 @@
     </div>
 
     <script>
-        (function(){
-            const layout = document.getElementById('layout');
-            const toggle = document.getElementById('navToggle');
-            const sidebar = document.getElementById('sidebar');
+    (function(){
+        const layout = document.getElementById('layout');
+        const toggle = document.getElementById('navToggle');
+        const sidebar = document.getElementById('sidebar');
+        const content = document.getElementById('content');
 
-            function setState(collapsed){
-                layout.classList.toggle('collapsed', collapsed);
-                toggle.setAttribute('aria-expanded', String(!collapsed));
-                sidebar.setAttribute('aria-hidden', String(collapsed));
-                toggle.textContent = collapsed ? '›' : '‹';
+        // --- função de estado do menu (mantém seu comportamento atual) sadasdsadas---
+        function setState(collapsed){
+            layout.classList.toggle('collapsed', collapsed);
+            toggle.setAttribute('aria-expanded', String(!collapsed));
+            sidebar.setAttribute('aria-hidden', String(collapsed));
+            toggle.textContent = collapsed ? '›' : '‹';
+        }
+        setState(true);
+
+        // --- carregar página via fetch e injetar dentro do #contents ---
+        async function loadIntoArticle(url, push = true){
+            try{
+                const res = await fetch(url, {cache: "no-store"});
+                if(!res.ok) throw new Error('Falha ao carregar: ' + res.status);
+                const text = await res.text();
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(text, 'text/html');
+
+                // tenta encontrar um <main> ou <article> na página alvo; senão usa body
+                const source = doc.querySelector('main') || doc.querySelector('article') || doc.body;
+                content.innerHTML = source ? source.innerHTML : text;
+
+                // atualiza título da página com título do documento carregado
+                const newTitle = doc.querySelector('title');
+                if(newTitle) document.title = newTitle.textContent;
+
+                if(push) history.pushState({url}, '', url);
+            }catch(err){
+                content.innerHTML = '<h2>Erro</h2><p>Não foi possível carregar o conteúdo.</p>';
+                console.error(err);
             }
+        }
 
-            toggle.addEventListener('click', () => {
-                const collapsed = !layout.classList.contains('collapsed');
-                // invert because setState expects collapsed boolean
-                setState(collapsed);
-            });
+        // --- intercepta cliques no menu para carregar dentro do article ---
+        sidebar.addEventListener('click', (ev) => {
+            const a = ev.target.closest('a');
+            if(!a) return;
+            const href = a.getAttribute('href');
+            // se href for uma âncora ou externo, deixa padrão
+            if(!href || href.startsWith('#') || href.startsWith('http')) return;
+            ev.preventDefault();
+            loadIntoArticle(href, true);
+        });
 
-            // iniciar colapsado
-            setState(true);
-        })();
+        // --- suporta voltar/avançar do histórico ---
+        window.addEventListener('popstate', (ev) => {
+            const state = ev.state;
+            if(state && state.url) loadIntoArticle(state.url, false);
+            else {
+                // sem estado -> carregar página atual (útil ao recarregar)
+                loadIntoArticle(location.pathname, false);
+            }
+        });
+
+        // --- comportamento do toggle (clique simples) ---
+        toggle.addEventListener('click', () => {
+            const collapsed = !layout.classList.contains('collapsed');
+            setState(collapsed);
+        });
+
+        // opcional: ao abrir a página, carregar 'inicio.html' automaticamente (se existir)
+        const initial = 'inicio.html';
+        fetch(initial, {method:'HEAD'}).then(r => {
+            if(r.ok) loadIntoArticle(initial, false);
+        }).catch(()=>{ /* ignora se não existir */ });
+
+    })();
     </script>
 </body>
 </html>
