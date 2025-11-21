@@ -3,113 +3,218 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NoteFlow</title>
+    <title>Página com Layout</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            background: #ffffff;
+            color: #333333;
+        }
+
+       header {
+    background: #ffffff;
+    color: #333333;
+    padding: 20px;
+    font-size: 24px;
+    border-bottom: 1px solid #ddd;
+    font-family: 'Bigbesty';
+    display: flex;
+    justify-content: space-between; /* título à esquerda, login à direita */
+    align-items: center;
+}
+
+header .header-left {
+    /* título encostado à esquerda */
+}
+
+header .header-right a {
+    text-decoration: none;
+    color: #3f51b5;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 5px 10px;
+    border: 1px solid #3f51b5;
+    border-radius: 5px;
+    transition: all 0.2s;
+}
+
+header .header-right a:hover {
+    background: #3f51b5;
+    color: #fff;
+}
+
+
+        .content {
+            display: flex;
+            flex: 1;
+            min-height: 0;
+            position: relative;
+        }
+
+        nav {
+            background: #f9f9f9;
+            padding: 20px;
+            width: 200px;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid #ddd;
+            overflow-y: auto;
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            transform: translateX(-100%); /* totalmente escondido */
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        nav.ativo {
+            transform: translateX(0); /* desliza para aparecer */
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #333;
+            background: #ffffff;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            text-align: center;
+            transition: all 0.2s;
+        }
+
+        nav a:hover {
+            background: #e0e0e0;
+        }
+
+#toggle-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 5px;
+    background: #3f51b5;
+    color: #fff;
+    border: none;
+    border-radius: 50%; /* completamente arredondado */
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 1100;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#toggle-nav:hover {
+    background: #5c6bc0;
+    transform: translateY(-50%) scale(1.1);
+}
+
+#toggle-nav.ativo {
+    left: 210px; /* acompanha a nav aberta */
+}
+
+
+
+        main {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: #ffffff;
+            margin-left: 0;
+            transition: margin-left 0.3s ease;
+        }
+
+        article {
+            max-width: 800px;
+            margin: auto;
+        }
+
+        footer {
+            background: #ffffff;
+            color: #333333;
+            text-align: center;
+            padding: 10px;
+            font-size: 14px;
+            border-top: 1px solid #ddd;
+            font-family: 'Bigbesty';
+        }
+    </style>
+    <script>
+        let navAberto = false;
+
+        function carregarArticle(event, arquivo) {
+            event.preventDefault();
+            fetch(arquivo)
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('main-content').innerHTML = html;
+                })
+                .catch(err => console.error('Erro ao carregar:', err));
+        }
+
+        function toggleNav() {
+            const nav = document.querySelector('nav');
+            const main = document.querySelector('main');
+            const toggleBtn = document.getElementById('toggle-nav');
+
+            if (navAberto) {
+                nav.classList.remove('ativo');
+                toggleBtn.classList.remove('ativo');
+                main.style.marginLeft = '0';
+                toggleBtn.innerHTML = '&#x25B6;'; // seta direita
+                navAberto = false;
+            } else {
+                nav.classList.add('ativo');
+                toggleBtn.classList.add('ativo');
+                main.style.marginLeft = '200px';
+                toggleBtn.innerHTML = '&#x25C0;'; // seta esquerda
+                navAberto = true;
+            }
+        }
+    </script>
 </head>
 <body>
-    <div class="layout collapsed" id="layout">
-        <header>
-            <div class="brand">NoteFlow</div>
-        </header>
+   <header>
+    <div class="header-left">NoteFlow</div>
+    <div class="header-right"><a href="login.html"  onclick="carregarArticle(event, 'login.html')" >Login</a></div>
+</header>
 
-        <nav id="sidebar" aria-label="Menu principal" aria-hidden="true">
-            <ul>
-                <li><a href="inicio.html">Início</a></li>
-                <li><a href="notas.html">Notas</a></li>
-                <li><a href="arquivos.html">Arquivos</a></li>
-                <li><a href="config.html">Configurações</a></li>
-            </ul>
+
+    <div class="content">
+        <nav>
+            <a href="servicos.html" onclick="carregarArticle(event, 'servicos.html')">Semana</a>
+            <a href="contato.html" onclick="carregarArticle(event, 'contato.html')">Metas</a>
+            <a href="contato.html" onclick="carregarArticle(event, 'contato.html')">Materias</a>
+            <a href="contato.html" onclick="carregarArticle(event, 'contato.html')">bloco de notas</a>
+            <a href="contato.html" onclick="carregarArticle(event, 'contato.html')">estatisticas</a>
+            <a href="sobre.html" onclick="carregarArticle(event, 'sobre.html')">Sobre</a>
+
         </nav>
 
-        <button class="nav-toggle" id="navToggle" aria-controls="sidebar" aria-expanded="false" title="Abrir/fechar menu">›</button>
+        <button id="toggle-nav" onclick="toggleNav()">&#x25B6;</button>
 
-        <main>
-            <!-- Conteúdo carregado dinamicamente aqui -->
-            <article id="content" role="article">
-                <h1>Conteúdo principal</h1>
-                <p>Carregue uma página do menu.</p>
+        <main id="main-content">
+            <article>
+                <h2>Home</h2>
+                <p>Este é o conteúdo inicial da página.</p>
             </article>
         </main>
-
-        <footer>
-            © 2025 NoteFlow
-        </footer>
     </div>
 
-    <script>
-    (function(){
-        const layout = document.getElementById('layout');
-        const toggle = document.getElementById('navToggle');
-        const sidebar = document.getElementById('sidebar');
-        const content = document.getElementById('content');
-
-        // --- função de estado do menu (mantém seu comportamento atual) sadasdsadas---
-        function setState(collapsed){
-            layout.classList.toggle('collapsed', collapsed);
-            toggle.setAttribute('aria-expanded', String(!collapsed));
-            sidebar.setAttribute('aria-hidden', String(collapsed));
-            toggle.textContent = collapsed ? '›' : '‹';
-        }
-        setState(true);
-
-        // --- carregar página via fetch e injetar dentro do #contents ---
-        async function loadIntoArticle(url, push = true){
-            try{
-                const res = await fetch(url, {cache: "no-store"});
-                if(!res.ok) throw new Error('Falha ao carregar: ' + res.status);
-                const text = await res.text();
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(text, 'text/html');
-
-                // tenta encontrar um <main> ou <article> na página alvo; senão usa body
-                const source = doc.querySelector('main') || doc.querySelector('article') || doc.body;
-                content.innerHTML = source ? source.innerHTML : text;
-
-                // atualiza título da página com título do documento carregado
-                const newTitle = doc.querySelector('title');
-                if(newTitle) document.title = newTitle.textContent;
-
-                if(push) history.pushState({url}, '', url);
-            }catch(err){
-                content.innerHTML = '<h2>Erro</h2><p>Não foi possível carregar o conteúdo.</p>';
-                console.error(err);
-            }
-        }
-
-        // --- intercepta cliques no menu para carregar dentro do article ---
-        sidebar.addEventListener('click', (ev) => {
-            const a = ev.target.closest('a');
-            if(!a) return;
-            const href = a.getAttribute('href');
-            // se href for uma âncora ou externo, deixa padrão
-            if(!href || href.startsWith('#') || href.startsWith('http')) return;
-            ev.preventDefault();
-            loadIntoArticle(href, true);
-        });
-
-        // --- suporta voltar/avançar do histórico ---
-        window.addEventListener('popstate', (ev) => {
-            const state = ev.state;
-            if(state && state.url) loadIntoArticle(state.url, false);
-            else {
-                // sem estado -> carregar página atual (útil ao recarregar)
-                loadIntoArticle(location.pathname, false);
-            }
-        });
-
-        // --- comportamento do toggle (clique simples) ---
-        toggle.addEventListener('click', () => {
-            const collapsed = !layout.classList.contains('collapsed');
-            setState(collapsed);
-        });
-
-        // opcional: ao abrir a página, carregar 'inicio.html' automaticamente (se existir)
-        const initial = 'inicio.html';
-        fetch(initial, {method:'HEAD'}).then(r => {
-            if(r.ok) loadIntoArticle(initial, false);
-        }).catch(()=>{ /* ignora se não existir */ });
-
-    })();
-    </script>
+    <footer>
+       @ NoteFlow 2025
+    </footer>
 </body>
 </html>
