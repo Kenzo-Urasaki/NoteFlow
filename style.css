@@ -10,7 +10,7 @@
 :root{
 	--main-bg: linear-gradient(180deg,black);
 	--nav-expanded-bg: linear-gradient(120deg,#0e0915,#302344,#5b4381);
-	--nav-foreground: #ffffff;
+	--nav-foreground: #e3c5f5;
 }
 
  :root{
@@ -21,7 +21,7 @@
             --bg:linear-gradient(120deg,#0e0915,#302344, #5b4381);
             --transition-fast: 0.9s cubic-bezier(.2,.9,.2,1);
             --triangle-size: 25px;
-            --triangle-color: #3A86FF; 
+            --triangle-color: #3c3249;
 
         }
         * { box-sizing:border-box; }
@@ -48,7 +48,7 @@
             z-index:2;
             font-family: 'Bigbesty', sans-serif ;
             font-size: 5vh;
-            color: #8D77C0;
+            color: #3c3249;
         }
         /* nav width will animate */
         nav{
@@ -61,6 +61,9 @@
             transition: width var(--transition-fast), border-right-color .18s, padding .18s, background .18s;
             box-sizing:border-box;
             position:relative;
+            border: none;
+            border-radius: 24px;
+           
         }
         /* estado "fechado" da sidebar: reduz largura e esconde itens */
         .layout.collapsed nav{
@@ -141,23 +144,27 @@
         	color: var(--nav-foreground);
         	text-decoration:none
         }
-        nav a:hover{background:#A9D6FF}
+        nav a:hover{
+          background:linear-gradient(120deg,#8D77C0, #5b4381);
+          color:#3c3249;
+        }
         .brand{font-weight:700}
         .login-btn{
             padding: 10px 20px;
-            background: #3A86FF;
-            color: #fff;
-            border: none;
+            background: linear-gradient(120deg,#8D77C0,#302344);
+            color: #0e0915;
+            border: 2px solid #000000;
             border-radius: 6px;
             font-size: 14px;
             font-family: 'Bigbesty', sans-serif;
             cursor: pointer;
             text-decoration: none;
-            transition: background 0.2s;
+            transition: background 0.2s, border;
         }
         .login-btn:hover{
-            background: #A9D6FF;
-            color: #1b2b3a;
+            background: linear-gradient(120deg,#0e0915,#302344);
+            color: #8D77C0;
+            border: 2px solid #302344;
         }
         /* Triângulo visual decorativo - TRIÂNGULO PURO (sem sombra ou caixa) */
         .triangle-indicator{
