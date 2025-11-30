@@ -21,7 +21,7 @@
             --bg:linear-gradient(120deg,#0e0915,#302344, #5b4381);
             --transition-fast: 0.9s cubic-bezier(.2,.9,.2,1);
             --triangle-size: 25px;
-            --triangle-color: #3c3249;
+            --triangle-color: #8D77C0;
 
         }
         * { box-sizing:border-box; }
