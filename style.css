@@ -6,6 +6,220 @@
     font-style: normal;
 }
 
+/* Variáveis globais (valores padrão; páginas podem sobrescrever em :root) */
+:root{
+	--main-bg: linear-gradient(180deg,black);
+	--nav-expanded-bg: linear-gradient(120deg,#0e0915,#302344,#5b4381);
+	--nav-foreground: #ffffff;
+}
+
+ :root{
+            --nav-width:220px;
+            --nav-collapsed:50px;
+            --header-h:100px;
+            --footer-h:32px;
+            --bg:linear-gradient(120deg,#0e0915,#302344, #5b4381);
+            --transition-fast: 0.9s cubic-bezier(.2,.9,.2,1);
+            --triangle-size: 25px;
+            --triangle-color: #3A86FF; 
+
+        }
+        * { box-sizing:border-box; }
+        html,body{ height:100%; margin:0; font-family: sans-serif; }
+        .layout{
+            min-height:100vh;
+            display:grid;
+            /* grid keeps two columns, nav will control its own width to allow smooth width transition */
+            grid-template-columns: auto 1fr;
+            grid-template-rows: var(--header-h) 1fr var(--footer-h);
+            background:var(--bg);
+            position:relative;
+            overflow: visible;
+        }
+        header{
+            grid-column:1/-1;
+            height:var(--header-h);
+            background:var(--bg);
+            display:flex;
+            align-items:center;
+            justify-content: space-between;
+            padding:0 16px;
+            box-shadow:0 1px 0 rgba(0,0,0,.06);
+            z-index:2;
+            font-family: 'Bigbesty', sans-serif ;
+            font-size: 5vh;
+            color: #8D77C0;
+        }
+        /* nav width will animate */
+        nav{
+            grid-row:2/3;
+            background: var(--nav-expanded-bg);
+            padding:16px;
+            height:100%;
+            overflow:visible;
+            width:var(--nav-width);
+            transition: width var(--transition-fast), border-right-color .18s, padding .18s, background .18s;
+            box-sizing:border-box;
+            position:relative;
+        }
+        /* estado "fechado" da sidebar: reduz largura e esconde itens */
+        .layout.collapsed nav{
+            width:var(--nav-collapsed);
+            padding:8px 6px;
+            border-right-color:transparent;
+            overflow: visible;
+            background: var(--main-bg) !important;
+        }
+        /* Quando a nav colapsada é hover (ou expandida via interação), restaurar a cor expandida */
+        .layout.collapsed nav:hover {
+            background: var(--nav-expanded-bg) !important;
+        }
+        /* animação dos itens internos */
+        nav ul{
+            list-style:none;
+            padding:0;
+            margin:0;
+            display:flex;
+            flex-direction:column;
+            gap:8px;
+            transition: opacity .18s, transform var(--transition-fast);
+            transform-origin: left center;
+            font-family: "Montserrat", sans-serif;
+            
+        }
+        .layout.collapsed nav ul{
+            opacity:0;
+            visibility:hidden;
+            height:0;
+            pointer-events:none;
+            transform: translateX(-6px) scale(.98);
+        }
+        .layout:not(.collapsed) nav ul{
+            opacity:1;
+            visibility:visible;
+            transform: translateX(0) scale(1);
+        }
+        main{
+            grid-row:2/3;
+            padding:24px;
+            overflow:auto;
+            background: var(--main-bg);
+            transition: margin-left var(--transition-fast);
+        }
+
+        /* transição de conteúdo injetado */
+        article#content {
+            position: relative;
+            overflow: hidden;
+        }
+        /* controla o fade do host (artigo) para uma troca visual */
+        article#content.fade-transition {
+            transition: opacity var(--transition-fast);
+            -webkit-transition: opacity var(--transition-fast);
+        }
+        article#content.fade-out {
+            opacity: 0;
+        }
+        article#content.fade-in {
+            opacity: 1;
+        }
+        footer{
+            grid-column:1/-1;
+            height:var(--footer-h);
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-size:12px;
+            color:#666;
+            background:var(--bg);
+            border-top:none;
+        }
+        nav a{
+        	display:block;
+        	padding:8px 10px;
+        	border-radius:6px;
+        	color: var(--nav-foreground);
+        	text-decoration:none
+        }
+        nav a:hover{background:#A9D6FF}
+        .brand{font-weight:700}
+        .login-btn{
+            padding: 10px 20px;
+            background: #3A86FF;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: 'Bigbesty', sans-serif;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+        .login-btn:hover{
+            background: #A9D6FF;
+            color: #1b2b3a;
+        }
+        /* Triângulo visual decorativo - TRIÂNGULO PURO (sem sombra ou caixa) */
+        .triangle-indicator{
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-style: solid;
+            background: none;
+            /* Removido box-shadow para triângulo puro */
+            transition: left var(--transition-fast), border-width var(--transition-fast), opacity var(--transition-fast);
+            z-index: 1000;
+            pointer-events: none;
+        }
+        /* Quando colapsado: visível com fade in */
+        .layout.collapsed .triangle-indicator{
+            left: 0;
+            border-width: var(--triangle-size) 0 var(--triangle-size) var(--triangle-size);
+            border-color: transparent transparent transparent var(--triangle-color);
+            opacity: 1;
+        }
+        /* Durante hover na nav colapsada: move para direita, aponta para dentro e fade out */
+        .layout.collapsed nav:hover .triangle-indicator{
+            left: var(--nav-width);
+            border-width: var(--triangle-size) var(--triangle-size) var(--triangle-size) 0;
+            border-color: transparent var(--triangle-color) transparent transparent;
+            opacity: 0;
+        }
+        /* Quando expandido (se houver estado expandido permanente): invisível */
+        .layout:not(.collapsed) .triangle-indicator{
+            opacity: 0;
+        }
+        /* Hover no triângulo (opcional - para estilização) */
+        .triangle-indicator:hover{
+            border-color: transparent transparent transparent #3d7eae; /* Ajustar para hover, mas pode ser removido se não quiser */
+        }
+        /* Esconder o botão antigo */
+        .nav-toggle{
+            display: none;
+        }
+        .layout.collapsed nav:hover {
+            width: var(--nav-width);
+            padding: 16px;
+            border-right-color: #e6e9ef;
+            background:var(--bg);
+        }
+        .layout.collapsed nav:hover ul {
+            opacity: 1;
+            visibility: visible;
+            height: auto;
+            pointer-events: auto;
+            transform: translateX(0) scale(1);
+        }
+        @media (max-width:720px){
+            .layout{grid-template-columns:1fr;grid-template-rows:var(--header-h) auto 1fr var(--footer-h)}
+            nav{grid-row:2/3;border-right:0;border-bottom:1px solid #e6e9ef;display:flex;padding:8px;overflow:auto;width:100%}
+            nav ul{flex-direction:row;gap:12px}
+            main{grid-row:3/4;padding:16px}
+            .nav-toggle{ display:none; } /* esconder toggle em telas pequenas para usar o menu responsivo */
+            .layout.collapsed{ grid-template-columns: 1fr; } /* não colapsar no mobile */
+        }
 .theme-switch {
   --toggle-size: 10px;
   /* the size is adjusted using font-size,
