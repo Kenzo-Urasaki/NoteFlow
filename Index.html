@@ -5,208 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NoteFlow</title>
     <link rel="stylesheet" href="style.css">
-    <style>
-        :root{
-            --nav-width:220px;
-            --nav-collapsed:48px;
-            --header-h:100px;
-            --footer-h:32px;
-            --bg:#f5f7fb;
-            --transition-fast: 280ms cubic-bezier(.2,.9,.2,1);
-
-            /* ========== ESTILIZAÇÃO DO TRIÂNGULO ========== */
-            /* Aqui você pode personalizar o triângulo indicador */
-            /* Tamanho: altura e largura do triângulo (em px) */
-            --triangle-size: 25px; /* Altere para mudar o tamanho geral */
-
-            /* Cor interna do triângulo (cor sólida do triângulo) */
-            --triangle-color: #3A86FF; /* Altere para mudar a cor */
-
-            /* ========== FIM DA ESTILIZAÇÃO DO TRIÂNGULO ========== */
-        }
-        * { box-sizing:border-box; }
-        html,body{ height:100%; margin:0; font-family: sans-serif; }
-        .layout{
-            min-height:100vh;
-            display:grid;
-            /* grid keeps two columns, nav will control its own width to allow smooth width transition */
-            grid-template-columns: auto 1fr;
-            grid-template-rows: var(--header-h) 1fr var(--footer-h);
-            background:var(--bg);
-            position:relative;
-            overflow: visible;
-        }
-        header{
-            grid-column:1/-1;
-            height:var(--header-h);
-            background:#fff;
-            display:flex;
-            align-items:center;
-            justify-content: space-between;
-            padding:0 16px;
-            box-shadow:0 1px 0 rgba(0,0,0,.06);
-            z-index:2;
-            font-family: 'Bigbesty', sans-serif ;
-            font-size: 5vh;
-            color: #3A86FF;
-        }
-        /* nav width will animate */
-        nav{
-            grid-row:2/3;
-            background:#fff;
-            padding:16px;
-            border-right:1px solid #e6e9ef;
-            height:100%;
-            overflow:visible;
-            width:var(--nav-width);
-            transition: width var(--transition-fast), border-right-color .18s, padding .18s;
-            box-sizing:border-box;
-            position:relative;
-        }
-        /* estado "fechado" da sidebar: reduz largura e esconde itens */
-        .layout.collapsed nav{
-            width:var(--nav-collapsed);
-            padding:8px 6px;
-            border-right-color:transparent;
-            overflow: visible;
-        }
-        /* animação dos itens internos */
-        nav ul{
-            list-style:none;
-            padding:0;
-            margin:0;
-            display:flex;
-            flex-direction:column;
-            gap:8px;
-            transition: opacity .18s, transform var(--transition-fast);
-            transform-origin: left center;
-        }
-        .layout.collapsed nav ul{
-            opacity:0;
-            visibility:hidden;
-            height:0;
-            pointer-events:none;
-            transform: translateX(-6px) scale(.98);
-        }
-        .layout:not(.collapsed) nav ul{
-            opacity:1;
-            visibility:visible;
-            transform: translateX(0) scale(1);
-        }
-        main{
-            grid-row:2/3;
-            padding:24px;
-            overflow:auto;
-            background:linear-gradient(180deg,#fff,#fbfdff);
-            transition: margin-left var(--transition-fast);
-        }
-        footer{
-            grid-column:1/-1;
-            height:var(--footer-h);
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            font-size:12px;
-            color:#666;
-            background:#fff;
-            border-top:1px solid #e6e9ef;
-        }
-        nav a{display:block;padding:8px 10px;border-radius:6px;color:#1b2b3a;text-decoration:none}
-        nav a:hover{background:#eef4ff}
-        .brand{font-weight:700}
-        .login-btn{
-            padding: 10px 20px;
-            background: #3A86FF;
-            color: #fff;
-            border: none;
-            border-radius: 6px;
-            font-size: 14px;
-            font-family: 'Bigbesty', sans-serif;
-            cursor: pointer;
-            text-decoration: none;
-            transition: background 0.2s;
-        }
-        .login-btn:hover{
-            background: #2563eb;
-        }
-        /* Triângulo visual decorativo - TRIÂNGULO PURO (sem sombra ou caixa) */
-        .triangle-indicator{
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 0;
-            height: 0;
-            border-style: solid;
-            background: none;
-            /* Removido box-shadow para triângulo puro */
-            transition: left var(--transition-fast), border-width var(--transition-fast), opacity var(--transition-fast);
-            z-index: 1000;
-            pointer-events: none;
-        }
-        /* Quando colapsado: visível com fade in */
-        .layout.collapsed .triangle-indicator{
-            left: 0;
-            border-width: var(--triangle-size) 0 var(--triangle-size) var(--triangle-size);
-            border-color: transparent transparent transparent var(--triangle-color);
-            opacity: 1;
-        }
-        /* Durante hover na nav colapsada: move para direita, aponta para dentro e fade out */
-        .layout.collapsed nav:hover .triangle-indicator{
-            left: var(--nav-width);
-            border-width: var(--triangle-size) var(--triangle-size) var(--triangle-size) 0;
-            border-color: transparent var(--triangle-color) transparent transparent;
-            opacity: 0;
-        }
-        /* Quando expandido (se houver estado expandido permanente): invisível */
-        .layout:not(.collapsed) .triangle-indicator{
-            opacity: 0;
-        }
-        /* Hover no triângulo (opcional - para estilização) */
-        .triangle-indicator:hover{
-            border-color: transparent transparent transparent #3d7eae; /* Ajustar para hover, mas pode ser removido se não quiser */
-        }
-        /* Esconder o botão antigo */
-        .nav-toggle{
-            display: none;
-        }
-        .layout.collapsed nav:hover {
-            width: var(--nav-width);
-            padding: 16px;
-            border-right-color: #e6e9ef;
-        }
-        .layout.collapsed nav:hover ul {
-            opacity: 1;
-            visibility: visible;
-            height: auto;
-            pointer-events: auto;
-            transform: translateX(0) scale(1);
-        }
-        @media (max-width:720px){
-            .layout{grid-template-columns:1fr;grid-template-rows:var(--header-h) auto 1fr var(--footer-h)}
-            nav{grid-row:2/3;border-right:0;border-bottom:1px solid #e6e9ef;display:flex;padding:8px;overflow:auto;width:100%}
-            nav ul{flex-direction:row;gap:12px}
-            main{grid-row:3/4;padding:16px}
-            .nav-toggle{ display:none; } /* esconder toggle em telas pequenas para usar o menu responsivo */
-            .layout.collapsed{ grid-template-columns: 1fr; } /* não colapsar no mobile */
-        }
-    </style>
 </head>
 <body>
     <div class="layout collapsed" id="layout">
         <header>
             <div class="brand">NoteFlow</div>
-            <button class="login-btn" id="loginBtn">Login</button>
+            <!-- trocado botão por link para abrir página inteira -->
+            <a class="login-btn" id="loginBtn" href="login.html">Login</a>
         </header>
         <nav id="sidebar">
             <div class="triangle-indicator"></div>
             <button class="nav-toggle" id="navToggle" aria-label="Toggle sidebar"></button>
             <ul>
-                <li><a data-page="configuracoes">Início</a></li>
-                <li><a data-page="notas">Notas</a></li>
-                <li><a data-page="semana">Semana</a></li>
-                <li><a data-page="materias">Matérias</a></li>
-                <li><a data-page="metas">Metas</a></li>
-                <li><a data-page="inicio">Configurações</a></li>
+                <!-- links agora são âncoras normais que abrem outra página -->
+                <li><a href="config.html" data-page="config">Início</a></li>
+                <li><a href="Index.html" data-page="notas">Notas</a></li>
+                <li><a href="semana.html" data-page="semana">Semana</a></li>
+                <li><a href="materias.html" data-page="materias">Matérias</a></li>
+                <li><a href="metas.html" data-page="metas">Metas</a></li>
+                <li><a href="inicio.html" data-page="inicio">Configurações</a></li>
             </ul>
         </nav>
         <!-- botão de abrir/fechar -->
@@ -220,37 +37,6 @@
   © 2025 NoteFlow
         </footer>
     </div>
-    <script>
-(function(){
-    const layout = document.getElementById('layout');
-    const sidebar = document.getElementById('sidebar');
-    const content = document.getElementById('content');
-    // 🔥 Função que carrega página real
-    async function loadPage(page){
-        try {
-            const response = await fetch(`${page}.html`);
-            const html = await response.text();
-            content.innerHTML = html;
-        } catch (e) {
-            content.innerHTML = "<h1>Erro ao carregar página</h1>";
-        }
-    }
-    // 🔥 Lógica dos links
-    sidebar.querySelectorAll("a").forEach(a => {
-        a.addEventListener("click", e => {
-            e.preventDefault();
-            let page = a.dataset.page;
-            loadPage(page);
-        });
-    });
-    // 🔥 Botão de Login
-    document.getElementById("loginBtn").addEventListener("click", () => {
-        loadPage("login");
-    });
-    // Carrega a página inicial automaticamente
-    loadPage("inicio");
-    setState(true);
-})();
-</script>
+    <!-- removido: script que fazia fetch/injeção e Shadow DOM -->
 </body>
 </html>
