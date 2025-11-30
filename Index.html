@@ -3,218 +3,254 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Página com Layout</title>
+    <title>NoteFlow</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            background: #ffffff;
-            color: #333333;
+        :root{
+            --nav-width:220px;
+            --nav-collapsed:48px;
+            --header-h:100px;
+            --footer-h:32px;
+            --bg:#f5f7fb;
+            --transition-fast: 280ms cubic-bezier(.2,.9,.2,1);
+
+            /* ========== ESTILIZAÇÃO DO TRIÂNGULO ========== */
+            /* Aqui você pode personalizar o triângulo indicador */
+            /* Tamanho: altura e largura do triângulo (em px) */
+            --triangle-size: 25px; /* Altere para mudar o tamanho geral */
+
+            /* Cor interna do triângulo (cor sólida do triângulo) */
+            --triangle-color: #3A86FF; /* Altere para mudar a cor */
+
+            /* ========== FIM DA ESTILIZAÇÃO DO TRIÂNGULO ========== */
         }
-
-       header {
-    background: #ffffff;
-    color: #333333;
-    padding: 20px;
-    font-size: 24px;
-    border-bottom: 1px solid #ddd;
-    font-family: 'Bigbesty';
-    display: flex;
-    justify-content: space-between; /* título à esquerda, login à direita */
-    align-items: center;
-}
-
-header .header-left {
-    /* título encostado à esquerda */
-}
-
-header .header-right a {
-    text-decoration: none;
-    color: #3f51b5;
-    font-size: 16px;
-    font-weight: bold;
-    padding: 5px 10px;
-    border: 1px solid #3f51b5;
-    border-radius: 5px;
-    transition: all 0.2s;
-}
-
-header .header-right a:hover {
-    background: #3f51b5;
-    color: #fff;
-}
-
-
-        .content {
-            display: flex;
-            flex: 1;
-            min-height: 0;
-            position: relative;
+        * { box-sizing:border-box; }
+        html,body{ height:100%; margin:0; font-family: sans-serif; }
+        .layout{
+            min-height:100vh;
+            display:grid;
+            /* grid keeps two columns, nav will control its own width to allow smooth width transition */
+            grid-template-columns: auto 1fr;
+            grid-template-rows: var(--header-h) 1fr var(--footer-h);
+            background:var(--bg);
+            position:relative;
+            overflow: visible;
         }
-
-        nav {
-            background: #f9f9f9;
-            padding: 20px;
-            width: 200px;
-            display: flex;
-            flex-direction: column;
-            border-right: 1px solid #ddd;
-            overflow-y: auto;
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            left: 0;
-            transform: translateX(-100%); /* totalmente escondido */
-            transition: transform 0.3s ease;
-            z-index: 1000;
+        header{
+            grid-column:1/-1;
+            height:var(--header-h);
+            background:#fff;
+            display:flex;
+            align-items:center;
+            justify-content: space-between;
+            padding:0 16px;
+            box-shadow:0 1px 0 rgba(0,0,0,.06);
+            z-index:2;
+            font-family: 'Bigbesty', sans-serif ;
+            font-size: 5vh;
+            color: #3A86FF;
         }
-
-        nav.ativo {
-            transform: translateX(0); /* desliza para aparecer */
+        /* nav width will animate */
+        nav{
+            grid-row:2/3;
+            background:#fff;
+            padding:16px;
+            border-right:1px solid #e6e9ef;
+            height:100%;
+            overflow:visible;
+            width:var(--nav-width);
+            transition: width var(--transition-fast), border-right-color .18s, padding .18s;
+            box-sizing:border-box;
+            position:relative;
         }
-
-        nav a {
-            text-decoration: none;
-            color: #333;
-            background: #ffffff;
-            border: 1px solid #ccc;
-            padding: 10px;
-            margin-bottom: 10px;
-            font-size: 16px;
-            border-radius: 5px;
-            text-align: center;
-            transition: all 0.2s;
+        /* estado "fechado" da sidebar: reduz largura e esconde itens */
+        .layout.collapsed nav{
+            width:var(--nav-collapsed);
+            padding:8px 6px;
+            border-right-color:transparent;
+            overflow: visible;
         }
-
-        nav a:hover {
-            background: #e0e0e0;
+        /* animação dos itens internos */
+        nav ul{
+            list-style:none;
+            padding:0;
+            margin:0;
+            display:flex;
+            flex-direction:column;
+            gap:8px;
+            transition: opacity .18s, transform var(--transition-fast);
+            transform-origin: left center;
         }
-
-#toggle-nav {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    left: 5px;
-    background: #3f51b5;
-    color: #fff;
-    border: none;
-    border-radius: 50%; /* completamente arredondado */
-    width: 40px;
-    height: 40px;
-    font-size: 18px;
-    font-weight: bold;
-    cursor: pointer;
-    z-index: 1100;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-#toggle-nav:hover {
-    background: #5c6bc0;
-    transform: translateY(-50%) scale(1.1);
-}
-
-#toggle-nav.ativo {
-    left: 210px; /* acompanha a nav aberta */
-}
-
-
-
-        main {
-            flex: 1;
-            overflow-y: auto;
-            padding: 20px;
-            background: #ffffff;
-            margin-left: 0;
-            transition: margin-left 0.3s ease;
+        .layout.collapsed nav ul{
+            opacity:0;
+            visibility:hidden;
+            height:0;
+            pointer-events:none;
+            transform: translateX(-6px) scale(.98);
         }
-
-        article {
-            max-width: 800px;
-            margin: auto;
+        .layout:not(.collapsed) nav ul{
+            opacity:1;
+            visibility:visible;
+            transform: translateX(0) scale(1);
         }
-
-        footer {
-            background: #ffffff;
-            color: #333333;
-            text-align: center;
-            padding: 10px;
+        main{
+            grid-row:2/3;
+            padding:24px;
+            overflow:auto;
+            background:linear-gradient(180deg,#fff,#fbfdff);
+            transition: margin-left var(--transition-fast);
+        }
+        footer{
+            grid-column:1/-1;
+            height:var(--footer-h);
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-size:12px;
+            color:#666;
+            background:#fff;
+            border-top:1px solid #e6e9ef;
+        }
+        nav a{display:block;padding:8px 10px;border-radius:6px;color:#1b2b3a;text-decoration:none}
+        nav a:hover{background:#eef4ff}
+        .brand{font-weight:700}
+        .login-btn{
+            padding: 10px 20px;
+            background: #3A86FF;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
             font-size: 14px;
-            border-top: 1px solid #ddd;
-            font-family: 'Bigbesty';
+            font-family: 'Bigbesty', sans-serif;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+        .login-btn:hover{
+            background: #2563eb;
+        }
+        /* Triângulo visual decorativo - TRIÂNGULO PURO (sem sombra ou caixa) */
+        .triangle-indicator{
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-style: solid;
+            background: none;
+            /* Removido box-shadow para triângulo puro */
+            transition: left var(--transition-fast), border-width var(--transition-fast), opacity var(--transition-fast);
+            z-index: 1000;
+            pointer-events: none;
+        }
+        /* Quando colapsado: visível com fade in */
+        .layout.collapsed .triangle-indicator{
+            left: 0;
+            border-width: var(--triangle-size) 0 var(--triangle-size) var(--triangle-size);
+            border-color: transparent transparent transparent var(--triangle-color);
+            opacity: 1;
+        }
+        /* Durante hover na nav colapsada: move para direita, aponta para dentro e fade out */
+        .layout.collapsed nav:hover .triangle-indicator{
+            left: var(--nav-width);
+            border-width: var(--triangle-size) var(--triangle-size) var(--triangle-size) 0;
+            border-color: transparent var(--triangle-color) transparent transparent;
+            opacity: 0;
+        }
+        /* Quando expandido (se houver estado expandido permanente): invisível */
+        .layout:not(.collapsed) .triangle-indicator{
+            opacity: 0;
+        }
+        /* Hover no triângulo (opcional - para estilização) */
+        .triangle-indicator:hover{
+            border-color: transparent transparent transparent #3d7eae; /* Ajustar para hover, mas pode ser removido se não quiser */
+        }
+        /* Esconder o botão antigo */
+        .nav-toggle{
+            display: none;
+        }
+        .layout.collapsed nav:hover {
+            width: var(--nav-width);
+            padding: 16px;
+            border-right-color: #e6e9ef;
+        }
+        .layout.collapsed nav:hover ul {
+            opacity: 1;
+            visibility: visible;
+            height: auto;
+            pointer-events: auto;
+            transform: translateX(0) scale(1);
+        }
+        @media (max-width:720px){
+            .layout{grid-template-columns:1fr;grid-template-rows:var(--header-h) auto 1fr var(--footer-h)}
+            nav{grid-row:2/3;border-right:0;border-bottom:1px solid #e6e9ef;display:flex;padding:8px;overflow:auto;width:100%}
+            nav ul{flex-direction:row;gap:12px}
+            main{grid-row:3/4;padding:16px}
+            .nav-toggle{ display:none; } /* esconder toggle em telas pequenas para usar o menu responsivo */
+            .layout.collapsed{ grid-template-columns: 1fr; } /* não colapsar no mobile */
         }
     </style>
-    <script>
-        let navAberto = false;
-
-        function carregarArticle(event, arquivo) {
-            event.preventDefault();
-            fetch(arquivo)
-                .then(response => response.text())
-                .then(html => {
-                    document.getElementById('main-content').innerHTML = html;
-                })
-                .catch(err => console.error('Erro ao carregar:', err));
-        }
-
-        function toggleNav() {
-            const nav = document.querySelector('nav');
-            const main = document.querySelector('main');
-            const toggleBtn = document.getElementById('toggle-nav');
-
-            if (navAberto) {
-                nav.classList.remove('ativo');
-                toggleBtn.classList.remove('ativo');
-                main.style.marginLeft = '0';
-                toggleBtn.innerHTML = '&#x25B6;'; // seta direita
-                navAberto = false;
-            } else {
-                nav.classList.add('ativo');
-                toggleBtn.classList.add('ativo');
-                main.style.marginLeft = '200px';
-                toggleBtn.innerHTML = '&#x25C0;'; // seta esquerda
-                navAberto = true;
-            }
-        }
-    </script>
 </head>
 <body>
-   <header>
-    <div class="header-left">NoteFlow</div>
-    <div class="header-right"><a href="login.html"  onclick="carregarArticle(event, 'login.html')" >Login</a></div>
-</header>
-
-
-    <div class="content">
-        <nav>
-            <a href="servicos.html" onclick="carregarArticle(event, 'servicos.html')">Semana</a>
-            <a href="contato.html" onclick="carregarArticle(event, 'contato.html')">Metas</a>
-            <a href="contato.html" onclick="carregarArticle(event, 'contato.html')">Materias</a>
-            <a href="contato.html" onclick="carregarArticle(event, 'contato.html')">bloco de notas</a>
-            <a href="contato.html" onclick="carregarArticle(event, 'contato.html')">estatisticas</a>
-            <a href="sobre.html" onclick="carregarArticle(event, 'sobre.html')">Sobre</a>
-
+    <div class="layout collapsed" id="layout">
+        <header>
+            <div class="brand">NoteFlow</div>
+            <button class="login-btn" id="loginBtn">Login</button>
+        </header>
+        <nav id="sidebar">
+            <div class="triangle-indicator"></div>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle sidebar"></button>
+            <ul>
+                <li><a data-page="configuracoes">Início</a></li>
+                <li><a data-page="notas">Notas</a></li>
+                <li><a data-page="semana">Semana</a></li>
+                <li><a data-page="materias">Matérias</a></li>
+                <li><a data-page="metas">Metas</a></li>
+                <li><a data-page="inicio">Configurações</a></li>
+            </ul>
         </nav>
-
-        <button id="toggle-nav" onclick="toggleNav()">&#x25B6;</button>
-
-        <main id="main-content">
-            <article>
-                <h2>Home</h2>
-                <p>Este é o conteúdo inicial da página.</p>
-            </article>
-        </main>
+        <!-- botão de abrir/fechar -->
+       <main>
+        <article id="content">
+        <h1>Conteúdo principal</h1>
+        <p>Coloque aqui o conteúdo da sua página.</p>
+    </article>
+ </main>
+        <footer>
+  © 2025 NoteFlow
+        </footer>
     </div>
-
-    <footer>
-       @ NoteFlow 2025
-    </footer>
+    <script>
+(function(){
+    const layout = document.getElementById('layout');
+    const sidebar = document.getElementById('sidebar');
+    const content = document.getElementById('content');
+    // 🔥 Função que carrega página real
+    async function loadPage(page){
+        try {
+            const response = await fetch(`${page}.html`);
+            const html = await response.text();
+            content.innerHTML = html;
+        } catch (e) {
+            content.innerHTML = "<h1>Erro ao carregar página</h1>";
+        }
+    }
+    // 🔥 Lógica dos links
+    sidebar.querySelectorAll("a").forEach(a => {
+        a.addEventListener("click", e => {
+            e.preventDefault();
+            let page = a.dataset.page;
+            loadPage(page);
+        });
+    });
+    // 🔥 Botão de Login
+    document.getElementById("loginBtn").addEventListener("click", () => {
+        loadPage("login");
+    });
+    // Carrega a página inicial automaticamente
+    loadPage("inicio");
+    setState(true);
+})();
+</script>
 </body>
 </html>
