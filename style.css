@@ -19,7 +19,7 @@
             --header-h:100px;
             --footer-h:32px;
             --bg:linear-gradient(120deg,#0e0915,#302344, #5b4381);
-            --transition-fast: 0.9s cubic-bezier(.2,.9,.2,1);
+            --transition-fast: 1.5s cubic-bezier(.2,.9,.2,1);
             --triangle-size: 25px;
             --triangle-color: #3A86FF; 
 
@@ -141,7 +141,7 @@
         	color: var(--nav-foreground);
         	text-decoration:none
         }
-        nav a:hover{background:#A9D6FF}
+        nav a:hover{background:#8D77C0}
         .brand{font-weight:700}
         .login-btn{
             padding: 10px 20px;
@@ -156,8 +156,8 @@
             transition: background 0.2s;
         }
         .login-btn:hover{
-            background: #A9D6FF;
-            color: #1b2b3a;
+            background: #8D77C0;
+            color: #A9D6FF;
         }
         /* Triângulo visual decorativo - TRIÂNGULO PURO (sem sombra ou caixa) */
         .triangle-indicator{
