@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>NoteFlow - Início</title>
+	<link rel="stylesheet" href="style.css">
+</head>
+<style>
+  form {
+    background: #41295a;
+    background: linear-gradient(to right, #41295a, #2F0743);
+    padding: 30px 40px;
+    border-radius: 20px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+    max-width:  70%;
+    margin: 0 auto;
+    margin-top: 5vh;
+    font-family: 'montserrat';
+  }
+
+  h2 {
+    text-align: center;
+    margin-bottom: 15px;
+    color: white;
+  }
+
+  label {
+    font-size: 0.9rem;
+    color: #ccc;
+  }
+
+  input, textarea, select, button {
+    padding: 12px 15px;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+    font-size: 1rem;
+  }
+.linha {
+  display: flex;
+  gap: 20px;
+}
+
+.campo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+  input, textarea, select {
+    background: #5f0a87; 
+    background: linear-gradient(to right, #4c0c58, #491974);
+    color: #ffffff;
+    font-weight: 900;
+    letter-spacing: 1px;
+    font-family: 'montserrat';
+  } 
+
+  input::placeholder, textarea::placeholder {
+    color: #aaa;
+  }
+
+  button {
+    background: linear-gradient(120deg,#35008b,#5b00e4);
+    color: white; 
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+
+  button:hover {
+    background: linear-gradient(120deg,#72007c,#7e28ff);
+    color: white;
+  }
+  .top-nav {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end; /* ajustar conforme quiser */
+  margin-bottom: 18px;
+}
+
+.btn {
+  display: inline-block;
+  padding: 10px 16px;
+  background: #2f9cff;
+  color: #fff;
+  border-radius: 8px;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn:hover { opacity: 0.9; }
+
+</style>
+<body>
+	<div class="layout collapsed" id="layout">
+		<header>
+			<div class="brand">NoteFlow</div>
+			
+		</header>
+
+		<nav id="sidebar">
+			<div class="triangle-indicator"></div>
+			<button class="nav-toggle" id="navToggle" aria-label="Toggle sidebar"></button>
+			<ul>
+                <li><a href="inicio.html" data-page="config">Start</a></li>
+				<li><a href="semana.html" data-page="semana">Week</a></li>
+                <li><a href="Index.html" data-page="notas">Notes</a></li>
+				<li><a href="materias.html" data-page="materias">Matter</a></li>
+				<li><a href="metas.html" data-page="metas">Goals</a></li>
+				<li><a href="config.html" data-page="inicio">Settings</a></li>
+			</ul>
+		</nav>
+
+		<main>
+            <form id="formulario">
+  <h2>C R E A T E<br>
+     A C C O U N T</h2>
+<div class="linha">
+    <div class="campo">
+        <label for="nome">N A M E</label>
+        <input type="text" id="nome" name="nome" required>
+    </div>
+</div>
+<div class="campo">
+  <label for="cont">C O N T A C T</label>
+  <input type="text" id="telefone" maxlength="15" required>
+</div>
+    <div class="campo">
+        <label for="nome">E - M A I L</label>
+        <input type="email" id="nome" name="nome" required>
+    </div>
+<div class="campo">
+  <label for="cont">P A S S W O R D</label>
+  <input type="password" id="telefone" required>
+</div>
+
+
+  <button type="submit">R E D E E M</button>
+</form>
+		</main>
+		<footer>
+			© 2025 NoteFlow
+		</footer>
+	</div>
+</body>
+</html>
