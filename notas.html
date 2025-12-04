@@ -5,7 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NoteFlow</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@100..900&display=swap" rel="stylesheet">
 </head>
+<style>
+    body {
+        color: white;
+   }
+
+main {
+      font-family: "Roboto Slab", serif;
+}
+
+h1 {
+    color: #8D77C0;
+      font-family: 'Bigbesty';
+    src: url('Bigbesty.otf') format('OpenType');
+    }
+</style>
 <body>
     <div class="layout collapsed" id="layout">
         <header>
@@ -19,7 +37,7 @@
             <ul>
                 <!-- links agora são âncoras normais que abrem outra página -->
                 <li><a href="inicio.html" data-page="config">Start</a></li>
-                <li><a href="notas.html" data-page="notas">Notes</a></li>
+                <li><a href="semana.html" data-page="semana">Week</a></li>
                 <li><a href="materias.html" data-page="materias">Matter</a></li>
                 <li><a href="metas.html" data-page="metas">Goals</a></li>
                 <li><a href="config.html" data-page="inicio">Settings</a></li>
@@ -28,8 +46,13 @@
         <!-- botão de abrir/fechar -->
        <main>
         <article id="content">
-        <h1>Conteúdo principal</h1>
-        <p>Coloque aqui o conteúdo da sua página.</p>
+        <h1>Notes</h1>
+        <br><br>
+        <div class="form-container">
+        <label for="username"></label>
+        <!-- O campo de digitação em si -->
+        <input type="text" id="username" name="username" placeholder="10/10/2020 -Estudar matemática">
+    </div>
     </article>
  </main>
         <footer>
