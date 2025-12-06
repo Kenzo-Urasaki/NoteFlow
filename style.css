@@ -11,6 +11,7 @@
 	--main-bg: linear-gradient(180deg,black);
 	--nav-expanded-bg: linear-gradient(120deg,#0e0915,#302344,#5b4381);
 	--nav-foreground: #f0cbed;
+
 }
 
  :root{
@@ -48,7 +49,7 @@
             z-index:2;
             font-family: 'Bigbesty', sans-serif ;
             font-size: 5vh;
-            color: #8D77C0;
+            color: #3c3249;
         }
         /* nav width will animate */
         nav{
@@ -148,11 +149,14 @@
         }
         nav a:hover{
           background:linear-gradient(120deg,#8D77C0, #5b4381);
+
           color:#f7d8f7;
+
         }
         .brand{font-weight:700}
         .login-btn{
             padding: 10px 20px;
+
             background: linear-gradient(120deg,#ffffff,#9e5dff);
             color: #0e0915;
             border-radius: 6px;
@@ -167,6 +171,7 @@
         .login-btn:hover{
             background: linear-gradient(120deg,#72007c,#7e28ff);
             color: #ffffff;
+
         }
         /* Triângulo visual decorativo - TRIÂNGULO PURO (sem sombra ou caixa) */
         .triangle-indicator{
