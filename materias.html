@@ -5,12 +5,89 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>NoteFlow - Início</title>
 	<link rel="stylesheet" href="style.css">
+	<script src="js.js" defer></script>
 </head>
+<style>
+	.subject-box {
+    background: #2a0d3b;
+    padding: 20px;
+    border-radius: 14px;
+    border: 2px solid #3c1464;
+    margin-bottom: 20px;
+    position: relative;
+    box-shadow: 0 0 10px rgba(91,0,228,0.2);
+}
+
+.subject-title {
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #8D77C0;
+    margin-bottom: 15px;
+    outline: none;
+}
+
+.remove-subject {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    background: transparent;
+    border: none;
+    font-size: 1.1rem;
+    cursor: pointer;
+    color: #ff8a8a;
+}
+
+.topic-list {
+    list-style: none;
+    padding-left: 0;
+    margin: 0 0 10px 0;
+}
+
+.topic-item {
+    background: #3c1464;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.topic-item span {
+    outline: none;
+}
+
+.remove-topic {
+    background: transparent;
+    border: none;
+    color: #ff6b6b;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.add-topic {
+    background: #5b00e4;
+    color: white;
+    padding: 8px 14px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.add-topic:hover {
+    background: #6d1cff;
+}
+
+</style>
 <body>
 	<div class="layout collapsed" id="layout">
 		<header>
 			<div class="brand">NoteFlow</div>
+			<div id="userNameDisplay" class="user-display"></div>
+
 			<a class="login-btn" id="loginBtn" href="login.html">Create Account</a>
+
 		</header>
 
 		<nav id="sidebar">
@@ -26,11 +103,135 @@
 		</nav>
 
 		<main>
+			<article id="content">
+    <h1>Subjects</h1>
+
+    <!-- Botões -->
+    <div class="notes-controls">
+        <button id="addSubjectBtn">➕ Add Subject</button>
+    </div>
+
+    <!-- Container das matérias -->
+    <div id="subjectsContainer"></div>
+</article>
+
 		</main>
 
 		<footer>
 			© 2025 NoteFlow
 		</footer>
 	</div>
+	<script>
+
+(function () {
+    let subjects = loadSubjects();
+
+    const subjectsContainer = document.getElementById("subjectsContainer");
+    const addSubjectBtn = document.getElementById("addSubjectBtn");
+
+    function saveSubjects() {
+        localStorage.setItem("noteflow_subjects", JSON.stringify(subjects));
+    }
+
+    function loadSubjects() {
+        const data = localStorage.getItem("noteflow_subjects");
+        return data ? JSON.parse(data) : [];
+    }
+
+    function renderSubjects() {
+        subjectsContainer.innerHTML = "";
+
+        subjects.forEach((subject, index) => {
+            
+            // BOX MATÉRIA
+            const box = document.createElement("div");
+            box.className = "subject-box";
+
+            // TÍTULO
+            const title = document.createElement("div");
+            title.className = "subject-title";
+            title.contentEditable = true;
+            title.innerText = subject.name || "New Subject";
+
+            title.addEventListener("input", () => {
+                subjects[index].name = title.innerText;
+                saveSubjects();
+            });
+
+            // BOTÃO REMOVER MATÉRIA
+            const removeBtn = document.createElement("button");
+            removeBtn.className = "remove-subject";
+            removeBtn.textContent = "❌";
+
+            removeBtn.addEventListener("click", () => {
+                subjects.splice(index, 1);
+                saveSubjects();
+                renderSubjects();
+            });
+
+            // LISTA DE TÓPICOS
+            const topicList = document.createElement("ul");
+            topicList.className = "topic-list";
+
+            subject.topics.forEach((topic, tIndex) => {
+                const li = document.createElement("li");
+                li.className = "topic-item";
+
+                const text = document.createElement("span");
+                text.contentEditable = true;
+                text.innerText = topic;
+
+                text.addEventListener("input", () => {
+                    subjects[index].topics[tIndex] = text.innerText;
+                    saveSubjects();
+                });
+
+                const removeTopicBtn = document.createElement("button");
+                removeTopicBtn.className = "remove-topic";
+                removeTopicBtn.textContent = "✖";
+
+                removeTopicBtn.addEventListener("click", () => {
+                    subjects[index].topics.splice(tIndex, 1);
+                    saveSubjects();
+                    renderSubjects();
+                });
+
+                li.appendChild(text);
+                li.appendChild(removeTopicBtn);
+                topicList.appendChild(li);
+            });
+
+            // BOTÃO ADD TÓPICO
+            const addTopicBtn = document.createElement("button");
+            addTopicBtn.className = "add-topic";
+            addTopicBtn.textContent = "➕ Add Topic";
+
+            addTopicBtn.addEventListener("click", () => {
+                subjects[index].topics.push("New Topic");
+                saveSubjects();
+                renderSubjects();
+            });
+
+            // MONTAR A BOX
+            box.appendChild(removeBtn);
+            box.appendChild(title);
+            box.appendChild(topicList);
+            box.appendChild(addTopicBtn);
+
+            subjectsContainer.appendChild(box);
+        });
+    }
+
+    // Adicionar nova matéria
+    addSubjectBtn.addEventListener("click", () => {
+        subjects.push({ name: "New Subject", topics: [] });
+        saveSubjects();
+        renderSubjects();
+    });
+
+    renderSubjects();
+})();
+</script>
+
 </body>
 </html>

@@ -5,11 +5,178 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>NoteFlow - Início</title>
 	<link rel="stylesheet" href="style.css">
+	<script src="js.js" defer></script>
 </head>
+
+<style>
+/* ----------- GOALS PAGE ----------- */
+
+.page-title {
+    font-size: 32px;
+    margin-bottom: 20px;
+    color: #fff;
+    font-family: "Montserrat";
+}
+
+.add-btn {
+    padding: 12px 18px;
+    background: linear-gradient(120deg,#35008b,#5b00e4);
+    border: none;
+    border-radius: 10px;
+    color: #fff;
+    font-weight: bold;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.add-btn:hover {
+    opacity: .85;
+}
+
+.goals-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* cada meta */
+.goal {
+    background: linear-gradient(90deg, #2f0743, #41295a);
+    padding: 20px;
+    border-radius: 18px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.5);
+}
+
+/* header da meta */
+.goal-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    justify-content: space-between;
+}
+
+.goal-title {
+    font-size: 22px;
+    color: #fff;
+    font-weight: bold;
+    outline: none;
+	font-family: 'Montserrat';
+    flex: 1;
+}
+
+/* botão remover meta */
+.delete-goal {
+    background: transparent;
+    border: none;
+    font-size: 20px;
+    color: #ff6e6e;
+    cursor: pointer;
+}
+
+.delete-goal:hover {
+    color: #ff9e9e;
+}
+
+/* lista de mini metas */
+.subgoal-list {
+    margin-top: 12px;
+    padding-left: 10px;
+}
+
+.subgoal-list li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 0;
+    color: #fff;
+	font-family: 'Montserrat';
+}
+
+.subgoal-list span {
+    outline: none;
+}
+.subgoal-list input[type="checkbox"] {
+    appearance: none;      /* remove o checkbox padrão */
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    border: 2px solid #aaa;
+    border-radius: 4px;
+    background: #2a0837;
+    cursor: pointer;
+    position: relative;
+    transition: 0.25s;
+}
+
+/* quando marcado */
+.subgoal-list input[type="checkbox"]:checked {
+    background: #5b00e4;
+    border-color: #7f2aff;
+}
+
+/* check (✓) */
+.subgoal-list input[type="checkbox"]:checked::after {
+    content: "✔";
+    position: absolute;
+    color: white;
+    font-size: 14px;
+    left: 2px;
+    top: -1px;
+}
+
+
+.delete-sub {
+    background: transparent;
+    border: none;
+    color: #ff6e6e;
+    cursor: pointer;
+}
+
+.delete-sub:hover {
+    color: #ff9e9e;
+}
+
+/* botão adicionar mini meta */
+.add-subgoal-btn {
+    margin-top: 10px;
+    padding: 8px 12px;
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+	font-family: 'montserrat';
+}
+
+.add-subgoal-btn:hover {
+    background: rgba(255,255,255,0.2);
+}
+
+/* círculo de progresso */
+.progress-circle {
+     --p: 0;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background:
+        radial-gradient(closest-side, #2f0743 80%, transparent 0 99.9%, #0000),
+        conic-gradient(#5b00e4 calc(var(--p)), #3f1b54 0);
+    display: grid;
+    place-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 14px;
+    transition: --p 1.8s ease; /* animação suave do preenchimento */
+	font-family: 'Montserrat';
+}
+</style>
+
 <body>
 	<div class="layout collapsed" id="layout">
 		<header>
 			<div class="brand">NoteFlow</div>
+			<div id="userNameDisplay" class="user-display"></div>
+
 			<a class="login-btn" id="loginBtn" href="login.html">Create Account</a>
 		</header>
 
@@ -25,12 +192,191 @@
 			</ul>
 		</nav>
 
-		<main>
-		</main>
+<main>
+    <h1 class="page-title">Your Goals</h1>
 
-		<footer>
-			© 2025 NoteFlow
-		</footer>
-	</div>
+    <button id="addGoalBtn" class="add-btn">+ Add Goal</button>
+
+    <div id="goalsContainer" class="goals-container"></div>
+</main>
+
+<footer>
+    © 2025 NoteFlow
+</footer>
+
+</div>
+
+<script>
+let goals = JSON.parse(localStorage.getItem("noteflow_goals")) || [];
+
+function save() {
+    localStorage.setItem("noteflow_goals", JSON.stringify(goals));
+}
+
+function renderGoals() {
+    const container = document.getElementById("goalsContainer");
+    container.innerHTML = "";
+
+    goals.forEach(goal => {
+        const done = goal.subgoals.filter(s => s.done).length;
+        const total = goal.subgoals.length;
+        const finalPercent = total > 0 ? Math.round((done / total) * 100) : 0;
+
+        // pega percentual anterior salvo
+        const startPercent = typeof goal.lastPercent === "number" ? goal.lastPercent : 0;
+        const startDeg = startPercent * 3.6;
+
+        const div = document.createElement("div");
+        div.className = "goal";
+        div.dataset.id = goal.id;
+
+        div.innerHTML = `
+            <div class="goal-header">
+                <div class="progress-circle"
+                     data-percent="${finalPercent}"
+                     data-start="${startPercent}"
+                     style="--p:${startDeg}deg">
+                    ${startPercent}%
+                </div>
+
+                <h2 class="goal-title" data-id="${goal.id}" contenteditable="true">${goal.title}</h2>
+                <button class="delete-goal" data-id="${goal.id}">✖</button>
+            </div>
+
+            <ul class="subgoal-list">
+                ${goal.subgoals.map(s => `
+                    <li>
+                        <input type="checkbox" data-goal="${goal.id}" data-id="${s.id}" ${s.done ? "checked" : ""}>
+                        <span class="sub-text" contenteditable="true"
+                              data-goal="${goal.id}" data-id="${s.id}">
+                            ${s.text}
+                        </span>
+                        <button class="delete-sub" data-goal="${goal.id}" data-id="${s.id}">✖</button>
+                    </li>
+                `).join("")}
+            </ul>
+
+            <button class="add-subgoal-btn" data-id="${goal.id}">+ Mini Goal</button>
+        `;
+
+        container.appendChild(div);
+    });
+
+    attachEvents();
+    animateCircles();
+}
+
+function attachEvents() {
+
+    document.querySelectorAll(".delete-goal").forEach(btn => {
+        btn.onclick = () => {
+            goals = goals.filter(g => g.id !== btn.dataset.id);
+            save();
+            renderGoals();
+        };
+    });
+
+    document.querySelectorAll(".delete-sub").forEach(btn => {
+        btn.onclick = () => {
+            const g = goals.find(x => x.id === btn.dataset.goal);
+            g.subgoals = g.subgoals.filter(s => s.id !== btn.dataset.id);
+            save();
+            renderGoals();
+        };
+    });
+
+    document.querySelectorAll(".subgoal-list input[type=checkbox]").forEach(chk => {
+        chk.onchange = () => {
+            const g = goals.find(x => x.id === chk.dataset.goal);
+            const s = g.subgoals.find(y => y.id === chk.dataset.id);
+            s.done = chk.checked;
+            save();
+            renderGoals();
+        };
+    });
+
+    document.querySelectorAll(".goal-title").forEach(title => {
+        title.oninput = () => {
+            const g = goals.find(x => x.id === title.dataset.id);
+            g.title = title.textContent;
+            save();
+        };
+    });
+
+    document.querySelectorAll(".sub-text").forEach(span => {
+        span.oninput = () => {
+            const g = goals.find(x => x.id === span.dataset.goal);
+            const s = g.subgoals.find(y => y.id === span.dataset.id);
+            s.text = span.textContent;
+            save();
+        };
+    });
+
+    document.querySelectorAll(".add-subgoal-btn").forEach(btn => {
+        btn.onclick = () => {
+            const g = goals.find(x => x.id === btn.dataset.id);
+            g.subgoals.push({
+                id: "s" + Date.now(),
+                text: "New mini goal",
+                done: false
+            });
+            save();
+            renderGoals();
+        };
+    });
+}
+
+function animateCircles() {
+    document.querySelectorAll(".progress-circle").forEach(circle => {
+        const finalPercent = parseInt(circle.dataset.percent);
+        const startPercent = parseInt(circle.dataset.start) || 0;
+
+        let current = startPercent;
+        const goalDiv = circle.closest(".goal");
+        const goalId = goalDiv ? goalDiv.dataset.id : null;
+
+        const speed = 20; // MAIS ALTO = MAIS LENTO
+
+        const animate = () => {
+            circle.textContent = current + "%";
+            const deg = current * 3.6;
+            circle.style.setProperty("--p", deg + "deg");
+
+            if (current < finalPercent) {
+                current++;
+                setTimeout(() => requestAnimationFrame(animate), speed);
+            } else if (current > finalPercent) {
+                current--;
+                setTimeout(() => requestAnimationFrame(animate), speed);
+            } else {
+                // terminou — salva o valor final
+                if (goalId) {
+                    const g = goals.find(x => x.id === goalId);
+                    if (g) {
+                        g.lastPercent = finalPercent;
+                        save();
+                    }
+                }
+            }
+        };
+
+        requestAnimationFrame(animate);
+    });
+}
+
+document.getElementById("addGoalBtn").onclick = () => {
+    goals.push({
+        id: "g" + Date.now(),
+        title: "New Goal",
+        subgoals: [],
+        lastPercent: 0
+    });
+    save();
+    renderGoals();
+};
+
+renderGoals();
+</script>
+
 </body>
 </html>

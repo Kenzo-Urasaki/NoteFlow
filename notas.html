@@ -8,8 +8,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@100..900&display=swap" rel="stylesheet">
+<script src="js.js" defer></script>
 </head>
 <style>
+
     body {
         color: white;
    }
@@ -20,46 +22,260 @@ main {
 
 h1 {
     color: #8D77C0;
-      font-family: 'Bigbesty';
-    src: url('Bigbesty.otf') format('OpenType');
-    }
+    font-family: 'Bigbesty';
+    font-size: 3rem;
+    margin-bottom: 15px;
+    letter-spacing: 1px;
+    text-shadow: 0px 0px 8px rgba(141,119,192,0.4);
+}
+
+
+/* ======== ABAS ======== */
+.tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+}
+
+.tab {
+    padding: 8px 14px;
+    background: #33175a;
+    color: white;
+    border-radius: 10px;
+    cursor: pointer;
+    user-select: none;
+    min-width: 120px;
+    text-align: center;
+    border: 1px solid transparent;
+    font-weight: 500;
+    transition: 0.25s;
+}
+
+.tab:hover {
+    background: #472080;
+    transform: translateY(-2px);
+}
+
+.tab.active {
+    background: #5b00e4;
+    border-color: #cfc0ff;
+    box-shadow: 0 0 12px rgba(91,0,228,0.5);
+    transform: translateY(-3px);
+}
+
+/* ======== ÁREA DE TEXTO ======== */
+#noteContent {
+    width: 100%;
+    height: 330px;
+    background: #2a0d3b;
+    color: white;
+    padding: 18px;
+    border-radius: 14px;
+    border: 2px solid #3c1464;
+    resize: none;
+    outline: none;
+    font-size: 1.05rem;
+    line-height: 1.5;
+    box-shadow: inset 0 0 8px rgba(0,0,0,0.3);
+    transition: 0.25s;
+}
+
+#noteContent:focus {
+    border-color: #8D77C0;
+    box-shadow: 0 0 12px rgba(141,119,192,0.5);
+}
+
+/* ======== CONTAINER ======== */
+main {
+    padding: 40px 60px;
+}
+
+/* ======== FOOTER ======== */
+footer {
+    text-align: center;
+    padding: 20px;
+    margin-top: 40px;
+    color: #c8b6ff;
+    opacity: 0.8;
+    font-size: 0.9rem;
+}
 </style>
 <body>
-    <div class="layout collapsed" id="layout">
-        <header>
-            <div class="brand">NoteFlow</div>
-            <!-- trocado botão por link para abrir página inteira -->
-            <a class="login-btn" id="loginBtn" href="login.html">Create Account</a>
-        </header>
+        <div class="layout collapsed" id="layout">
+       <header>
+			<div class="brand">NoteFlow</div>
+			<div id="userNameDisplay" class="user-display"></div>
+
+			<a class="login-btn" id="loginBtn" href="login.html">Create Account</a>
+		</header>
+
         <nav id="sidebar">
             <div class="triangle-indicator"></div>
             <button class="nav-toggle" id="navToggle" aria-label="Toggle sidebar"></button>
             <ul>
-                <!-- links agora são âncoras normais que abrem outra página -->
                 <li><a href="inicio.html" data-page="config">Start</a></li>
                 <li><a href="semana.html" data-page="semana">Week</a></li>
                 <li><a href="materias.html" data-page="materias">Matter</a></li>
                 <li><a href="metas.html" data-page="metas">Goals</a></li>
                 <li><a href="config.html" data-page="inicio">Settings</a></li>
-
             </ul>
         </nav>
-        <!-- botão de abrir/fechar -->
-       <main>
+
+      <main>
         <article id="content">
-        <h1>Notes</h1>
-        <br><br>
-        <div class="form-container">
-        <label for="username"></label>
-        <!-- O campo de digitação em si -->
-        <input type="text" id="username" name="username" placeholder="10/10/2020 -Estudar matemática">
-    </div>
-    </article>
- </main>
+            <h1>Notes</h1>
+
+            <!-- Botões -->
+            <div class="notes-controls">
+                <button id="addTabBtn">➕ Add Note</button>
+                <button id="closeTabBtn">❌ Close Note</button>
+            </div>
+
+            <!-- Abas -->
+            <div class="tabs" id="tabsContainer"></div>
+
+            <!-- Área de texto -->
+            <textarea id="noteContent" placeholder="Write your note here..."></textarea>
+        </article>
+      </main>
+
         <footer>
   © 2025 NoteFlow
         </footer>
     </div>
-    <!-- removido: script que fazia fetch/injeção e Shadow DOM -->
+<script>
+
+    // ---------------- STORAGE ----------------
+    function saveNotes() {
+        try {
+            localStorage.setItem("noteflow_tabs", JSON.stringify(tabs));
+        } catch (e) {
+            console.error("Erro ao salvar notas:", e);
+        }
+    }
+
+    function loadNotes() {
+        const data = localStorage.getItem("noteflow_tabs");
+        return data ? JSON.parse(data) : [];
+    }
+
+    // executa após DOM existir
+    (function () {
+        // ---------------- STATE ----------------
+        let tabs = loadNotes();
+        let currentTab = 0;
+
+        // ---------------- DOM ----------------
+        const tabsContainer = document.getElementById("tabsContainer");
+        const noteContent = document.getElementById("noteContent");
+        const addTabBtn = document.getElementById("addTabBtn");
+        const closeTabBtn = document.getElementById("closeTabBtn");
+
+        if (!tabsContainer || !noteContent || !addTabBtn || !closeTabBtn) {
+            console.error("Elementos de notas não encontrados no DOM.");
+            return;
+        }
+
+        // ---------------- FUNCTIONS ----------------
+        function renderTabs() {
+            tabsContainer.innerHTML = "";
+
+            tabs.forEach((tab, index) => {
+                const div = document.createElement("div");
+                div.className = "tab" + (index === currentTab ? " active" : "");
+                div.contentEditable = true;
+                div.innerText = tab.title || "Untitled";
+
+                // renomear aba (on blur salva também)
+                div.addEventListener("input", () => {
+                    tabs[index].title = div.innerText;
+                    saveNotes();
+                });
+                div.addEventListener("blur", () => {
+                    tabs[index].title = div.innerText;
+                    saveNotes();
+                });
+
+                // trocar de aba (click) — antes salva conteúdo atual
+                div.addEventListener("click", () => {
+                    // salva conteúdo atual
+                    if (tabs[currentTab]) tabs[currentTab].content = noteContent.value;
+                    currentTab = index;
+                    renderTabs();
+                    noteContent.value = tabs[index].content || "";
+                    noteContent.focus();
+                });
+
+                tabsContainer.appendChild(div);
+            });
+        }
+
+        function switchTab(index) {
+            if (index < 0 || index >= tabs.length) return;
+            // salva conteúdo atual antes de mudar
+            if (tabs[currentTab]) tabs[currentTab].content = noteContent.value;
+            currentTab = index;
+            renderTabs();
+            noteContent.value = tabs[index].content || "";
+        }
+
+        function addTab() {
+            // salva atual
+            if (tabs[currentTab]) tabs[currentTab].content = noteContent.value;
+            tabs.push({ title: "New Note", content: "" });
+            currentTab = tabs.length - 1;
+            saveNotes();
+            renderTabs();
+            noteContent.value = "";
+            noteContent.focus();
+        }
+
+        function closeTab() {
+            if (tabs.length === 0) return;
+            // salva atual antes de remover
+            if (tabs[currentTab]) tabs[currentTab].content = noteContent.value;
+
+            tabs.splice(currentTab, 1);
+
+            if (currentTab > 0) currentTab--;
+            saveNotes();
+            renderTabs();
+            noteContent.value = tabs[currentTab] ? tabs[currentTab].content : "";
+        }
+
+        // salvar conteúdo da nota (debounce leve opcional)
+        let saveTimeout;
+        noteContent.addEventListener("input", () => {
+            if (!tabs[currentTab]) return;
+            // debounce para não salvar a todo caractere (200ms)
+            clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(() => {
+                tabs[currentTab].content = noteContent.value;
+                saveNotes();
+            }, 200);
+        });
+
+        // listeners botões
+        addTabBtn.addEventListener("click", addTab);
+        closeTabBtn.addEventListener("click", closeTab);
+
+        // inicializar
+        if (!Array.isArray(tabs) || tabs.length === 0) {
+            tabs = [{ title: "New Note", content: "" }];
+            currentTab = 0;
+            saveNotes();
+        }
+
+        renderTabs();
+        noteContent.value = tabs[currentTab].content || "";
+
+        // garantindo salvar ao sair da página
+        window.addEventListener("beforeunload", () => {
+            if (tabs[currentTab]) tabs[currentTab].content = noteContent.value;
+            saveNotes();
+        });
+    })();
+    </script>
 </body>
 </html>

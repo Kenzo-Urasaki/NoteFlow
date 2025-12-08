@@ -234,34 +234,35 @@
             .nav-toggle{ display:none; } /* esconder toggle em telas pequenas para usar o menu responsivo */
             .layout.collapsed{ grid-template-columns: 1fr; } /* não colapsar no mobile */
         }
-
-
-input[type="text"] {
-    width: 100%; /* Ocupa toda a largura do contêiner */
-    padding-top: 5px; /* Define um padding superior menor */
-    padding-right: 15px; /* Mantém o padding lateral se desejado */
-    padding-bottom: 300px; /* Define um padding inferior menor */
-    padding-left: 15px; /* Mantém o padding lateral se desejado */
-    margin-bottom: 10px;
-    border: 2px solid #ffffff;
-    border-radius: 4px; /* Cantos arredondados */
-    box-sizing: border-box; /* Garante que o padding não aumente a largura total */
-    font-size: 17px;
-    font-family: 'montserrat';
-    font-weight: 600;
-    letter-spacing: 2px;
-    border-color: #7700ff;
-    box-shadow: 5px 5px 5px rgb(79, 0, 182);
+        .notes-controls {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
 }
 
-/* Estilo para quando o campo recebe foco (clicado) */
-input[type="text"]:focus {
-    border-color: #7700ff;
-    outline: none; /* Remove o contorno padrão do navegador */
-    box-shadow: 5px 5px 5px rgb(79, 0, 182);
-    
+.notes-controls button {
+    background: #5b00e4;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.2s;
+    font-size: 0.95rem;
+    box-shadow: 0 0 10px rgba(91,0,228,0.4);
 }
 
-input::placeholder {
-    color: rgba(79, 0, 182, 0.356);
+.notes-controls button:hover {
+    transform: translateY(-2px);
+    background: #6b1bff;
+    box-shadow: 0 0 12px rgba(120,0,255,0.6);
+}
+.user-display {
+    color: #3c3249;
+    font-family: 'bigbesty', sans-serif;
+    font-weight: 700;
+    font-size: 1.6rem;
+    margin-left: auto; /* joga pro canto direito */
+    padding-right: 20px;
 }

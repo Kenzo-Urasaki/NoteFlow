@@ -5,14 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NoteFlow</title>
     <link rel="stylesheet" href="style.css">
+    <script src="js.js" defer></script>
 </head>
 <body>
     <div class="layout collapsed" id="layout">
-        <header>
-            <div class="brand">NoteFlow</div>
-            <!-- trocado botão por link para abrir página inteira -->
-            <a class="login-btn" id="loginBtn" href="login.html">Create Account</a>
-        </header>
+      	<header>
+			<div class="brand">NoteFlow</div>
+			<div id="userNameDisplay" class="user-display"></div>
+
+			<a class="login-btn" id="loginBtn" href="login.html">Create Account</a>
+
+		</header>
         <nav id="sidebar">
             <div class="triangle-indicator"></div>
             <button class="nav-toggle" id="navToggle" aria-label="Toggle sidebar"></button>
@@ -36,6 +39,7 @@
   © 2025 NoteFlow
         </footer>
     </div>
-    <!-- removido: script que fazia fetch/injeção e Shadow DOM -->
+
+
 </body>
 </html>
