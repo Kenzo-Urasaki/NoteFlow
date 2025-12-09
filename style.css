@@ -8,7 +8,7 @@
 
 /* Variáveis globais (valores padrão; páginas podem sobrescrever em :root) */
 :root{
-	--main-bg: linear-gradient(180deg,black);
+	--main-bg:linear-gradient(120deg, rgb(40, 16, 63), rgb(40, 16, 63), rgb(0, 0, 0));
 	--nav-expanded-bg: linear-gradient(120deg,#0e0915,#302344,#5b4381);
 	--nav-foreground: #f0cbed;
 
@@ -63,7 +63,7 @@
             box-sizing:border-box;
             position:relative;
             border: none;
-            border-radius: 24px;
+            border-radius: 10px;
            
         }
         /* estado "fechado" da sidebar: reduz largura e esconde itens */
@@ -72,7 +72,7 @@
             padding:8px 6px;
             border-right-color:transparent;
             overflow: visible;
-            background: var(--main-bg) !important;
+            background:  rgb(40, 16, 63) !important;
         }
         /* Quando a nav colapsada é hover (ou expandida via interação), restaurar a cor expandida */
         .layout.collapsed nav:hover {

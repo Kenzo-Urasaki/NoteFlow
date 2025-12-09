@@ -118,7 +118,7 @@ button:hover {
 			<button class="nav-toggle" id="navToggle" aria-label="Toggle sidebar"></button>
 			<ul>
                 <li><a href="inicio.html" data-page="config">Start</a></li>
-				<li><a href="semana.html" data-page="semana">Week</a></li>
+				<li><a href="semana.html" data-page="semana">Calendar</a></li>
                 <li><a href="notas.html" data-page="notas">Notes</a></li>
 				<li><a href="materias.html" data-page="materias">Matter</a></li>
 				<li><a href="metas.html" data-page="metas">Goals</a></li>
@@ -136,8 +136,8 @@ button:hover {
         </div>
 
         <div class="campo">
-            <label for="contact">C O N T A C T</label>
-            <input type="text" id="contact" name="contact" maxlength="15" required>
+            <label for="cont">C O N T A C T</label>
+            <input type="text" id="cont" name="cont" maxlength="15" required>
         </div>
 
         <div class="campo">
@@ -158,25 +158,32 @@ button:hover {
 			© 2025 NoteFlow
 		</footer>
 	</div>
-  <script>
+<script>
 document.getElementById("formulario").addEventListener("submit", function(e) {
     e.preventDefault();
 
     const user = {
         name: document.getElementById("name").value,
-        contact: document.getElementById("contact").value,
+        cont: document.getElementById("cont").value,
         email: document.getElementById("email").value,
         password: document.getElementById("password").value
     };
 
+    // salvar tudo junto
     localStorage.setItem("noteflow_user", JSON.stringify(user));
+
+    // salvar separado (usado na página de configurações)
+    localStorage.setItem("noteflow_user_name", user.name);
+    localStorage.setItem("noteflow_user_email", user.email);
+    localStorage.setItem("noteflow_user_cont", user.cont);
+    
 
     alert("Conta criada com sucesso!");
 
-    // redireciona
     window.location.href = "inicio.html";
 });
 </script>
+
 
 </body>
 </html>

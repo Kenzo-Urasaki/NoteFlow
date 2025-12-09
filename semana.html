@@ -1,45 +1,510 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NoteFlow</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="js.js" defer></script>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>NoteFlow - Início</title>
+	<link rel="stylesheet" href="style.css">
+	<script src="js.js" defer></script>
+
 </head>
+<style>
+
+        main{
+            background: var(--main-bg) ;
+            font-family: "Montserrat", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+            color:var(--text);
+            margin:0;
+            display:flex;
+            align-items:flex-start;
+            justify-content:center;
+        }
+
+        /* container */
+      .calendar-container { 
+       width: 420px;
+       margin: 40px auto;
+       background: #2a0540;
+       padding: 25px; border-radius: 15px;
+       color: white;
+       font-family: "Montserrat";
+       box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+        }
+
+         .calendar-header {
+         display: flex;
+        justify-content: space-between;
+         align-items: center; margin-bottom: 20px;
+          } 
+          .calendar-header button
+        { 
+        background: #5a00c8;
+        color: white; border: none;
+        padding: 8px 15px; border-radius: 6px;
+        font-size: 18px; cursor: pointer;
+        transition: opacity 0.25s ease;
+        } 
+        .calendar-header button:hover:not(.arrow-hidden) {
+    background: #6b00e8;
+    transform: scale(1.12);
+    opacity: 0.9;
+    filter: brightness(1.15);
+}
+
+/* Fade-out quando o mouse sai do botão */
+.calendar-header button:not(.arrow-hidden) {
+    opacity: 1;
+}
+
+.calendar-header button:not(:hover):not(.arrow-hidden) {
+    opacity: 0.85;   /* <--- fade-out suave */
+}
+
+        .calendar-grid { 
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 10px;
+                   }
+
+        .calendar-grid div
+        { 
+        padding: 12px; background: rgba(255,255,255,0.12);
+        text-align: center; border-radius: 8px; font-weight: bold;
+        cursor: pointer;
+        }
+         /* destaque do dia atual */ 
+         .calendar-grid .today { 
+            background: #471279;
+            color: white;
+                             } 
+
+         /* cores de marcações */
+
+        .mark-blue { 
+        background: rgba(0, 120, 255, 0.8) !important;} 
+        .mark-black { background: rgba(40, 40, 40, 0.9) !important; }
+        .mark-green { background: rgba(0, 190, 70, 0.85) !important; }
+        .mark-red { background: rgba(255, 60, 60, 0.85) !important; }
+
+        /* modal de cores */
+        .color-modal, .note-modal { 
+        position: fixed; top: 0; 
+        left: 0; width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.6);
+        display: none; justify-content: center;
+        align-items: center; }
+
+        /* caixa de seleção de cores */ 
+        .color-box, .note-box { 
+        background: #2a0540;
+        padding: 25px;
+        border-radius: 15px;
+        width: 350px; 
+        color: white; } 
+
+        .color-options {
+        display: flex; justify-content: space-between; margin-top: 15px; 
+         } 
+        .color-btn { width: 55px; height: 55px; border-radius: 8px; border: none; cursor: pointer; }
+        .color-btn.blue {
+        background: #0078ff; }
+        .color-btn.black {
+        background: #101010; }
+        .color-btn.green { 
+        background: #00c851; } 
+        .color-btn.red {
+        background: #ff3b3b; }
+
+
+        /* bloco de notas */
+
+        #noteText { 
+        width: 100%; height: 130px;
+        margin-top: 10px; padding: 10px;
+        resize: none; 
+        background: #3b0d55; 
+        color: white; 
+         border: none; 
+        border-radius: 8px; 
+         } 
+
+        .note-actions { 
+        margin-top: 15px; 
+        display: flex; 
+        justify-content: space-between; 
+}    
+
+        .note-actions button { 
+        padding: 10px 20px; 
+        border: none; 
+        background: #7a00ff; 
+        color: white; 
+        border-radius: 8px; 
+        cursor: pointer; } 
+
+        .note-header { 
+        display: flex; 
+        justify-content: space-between; 
+        align-items: center; 
+      }   
+
+        .note-color-options { 
+        display: flex; 
+        gap: 6px; 
+    } 
+    .color-btn.small { 
+        width: 25px; 
+        height: 25px; 
+        border-radius: 5px; 
+        border: none; 
+        cursor: pointer; 
+    } 
+    
+    .color-btn.remove { 
+        background: #777; 
+        color: white; 
+        font-weight: bold; 
+        font-size: 14px; }
+
+     .arrow-hidden {
+    visibility: hidden;
+    pointer-events: none;
+}
+    /* --- Hover suave nos botões pequenos de cor --- */
+.color-btn.small {
+    transition: transform 0.18s ease, opacity 0.18s ease;
+}
+
+.color-btn.small:hover {
+    transform: scale(1.18);
+    opacity: 0.85;
+    border: none;
+    box-shadow: 0 0 8px rgba(255,255,255,0.3);
+}
+
+/* Botão X (remove) */
+.color-btn.remove:hover {
+    transform: scale(1.18);
+    opacity: 0.75;
+}
+
+/* --- Hover suave nos botões Salvar e Fechar --- */
+.note-actions button {
+    transition: background 0.25s ease, transform 0.20s ease;
+}
+
+.note-actions button:hover {
+    transform: scale(1.05);
+    background: #8b1aff;
+}
+
+/* --- Hover nos dias do calendário --- */
+.calendar-grid .calendar-day {
+    transition: background 0.2s ease, transform 0.22s ease, box-shadow 0.22s ease;
+}
+
+.calendar-grid .calendar-day:hover {
+    background: rgba(255,255,255,0.22);
+    transform: scale(1.06);
+    box-shadow: 0 0 8px rgba(255,255,255,0.25);
+}
+
+/* --- Hover nas setas Prev e Next --- */
+.calendar-header button {
+    transition: background 0.22s ease, transform 0.20s ease, opacity 0.22s ease;
+}
+
+.calendar-header button:hover:not(.arrow-hidden) {
+    background: #6b00e8;
+    transform: scale(1.12);
+    opacity: 0.9;
+}    
+</style>
 <body>
-    <div class="layout collapsed" id="layout">
-      	<header>
+	<div class="layout collapsed" id="layout">
+			<header>
 			<div class="brand">NoteFlow</div>
 			<div id="userNameDisplay" class="user-display"></div>
 
 			<a class="login-btn" id="loginBtn" href="login.html">Create Account</a>
 
 		</header>
-        <nav id="sidebar">
-            <div class="triangle-indicator"></div>
-            <button class="nav-toggle" id="navToggle" aria-label="Toggle sidebar"></button>
-            <ul>
-                <!-- links agora são âncoras normais que abrem outra página -->
-                <li><a href="inicio.html" data-page="config">Start</a></li>
-                <li><a href="notas.html" data-page="notas">Notes</a></li>
-                <li><a href="materias.html" data-page="materias">Matter</a></li>
-                <li><a href="metas.html" data-page="metas">Goals</a></li>
-                <li><a href="config.html" data-page="inicio">Settings</a></li>
-            </ul>
-        </nav>
-        <!-- botão de abrir/fechar -->
-       <main>
-        <article id="content">
-        <h1>Conteúdo principal</h1>
-        <p>Coloque aqui o conteúdo da sua página.</p>
-    </article>
- </main>
-        <footer>
-  © 2025 NoteFlow
-        </footer>
+
+		<nav id="sidebar">
+			<div class="triangle-indicator"></div>
+			<button class="nav-toggle" id="navToggle" aria-label="Toggle sidebar"></button>
+			<ul>
+				<li><a href="notas.html" data-page="notas">Notes</a></li>
+				<li><a href="semana.html" data-page="semana">Calendar</a></li>
+				<li><a href="materias.html" data-page="materias">Matter</a></li>
+				<li><a href="metas.html" data-page="metas">Goals</a></li>
+				<li><a href="config.html" data-page="inicio">Settings</a></li>
+
+			</ul>
+		</nav>
+
+		<main>
+              <div class="calendar-container">
+        <div class="calendar-header">
+            <button class="prev-month" aria-label="Mês anterior">◀</button>
+            <h2 id="calendarTitle">Carregando...</h2>
+            <button class="next-month" aria-label="Próximo mês">▶</button>
+        </div>
+
+        <div class="calendar-grid" id="calendarGrid"></div>
     </div>
 
+    <!-- Modal de nota -->
+    <div class="note-modal" id="noteModal" role="dialog" aria-modal="true" aria-hidden="true">
+        <div class="note-box" role="document">
+            <div class="note-header">
+                <h3 id="noteTitle"></h3>
+                <div class="note-color-options">
+                    <button class="color-btn small blue" data-color="blue" title="Azul"></button>
+                    <button class="color-btn small black" data-color="black" title="Preto"></button>
+                    <button class="color-btn small green" data-color="green" title="Verde"></button>
+                    <button class="color-btn small red" data-color="red" title="Vermelho"></button>
+                    <button class="color-btn small remove" data-color="none" title="Remover cor">X</button>
+                </div>
+            </div>
 
+            <textarea id="noteText" placeholder="Escreva o assunto..."></textarea>
+
+            <div class="note-actions">
+                <button id="saveNoteBtn">Salvar</button>
+                <button id="closeNoteBtn">Fechar</button>
+            </div>
+        </div>
+    </div>
+		</main>
+
+		<footer>
+			© 2025 NoteFlow
+		</footer>
+	</div>
+<script>
+    // ---------- Script completo do calendário + modal ----------
+    document.addEventListener("DOMContentLoaded", () => {
+        const sysYear = new Date().getFullYear();
+        let currentMonth = new Date().getMonth(); // 0..11
+
+        const title = document.getElementById("calendarTitle");
+        const grid = document.getElementById("calendarGrid");
+        const noteModal = document.getElementById("noteModal");
+        const noteTitle = document.getElementById("noteTitle");
+        const noteText = document.getElementById("noteText");
+        const saveNoteBtn = document.getElementById("saveNoteBtn");
+        const closeNoteBtn = document.getElementById("closeNoteBtn");
+        const colorButtons = document.querySelectorAll(".note-color-options .color-btn");
+
+        const prevBtn = document.querySelector(".prev-month");
+        const nextBtn = document.querySelector(".next-month");
+
+        // nomes dos meses em PT
+        const monthNames = [
+            "Janeiro","Fevereiro","Março","Abril","Maio","Junho",
+            "Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"
+        ];
+
+        // selectedDay global (formato id: day_{ano}_{mes}_{dia})
+        window.selectedDay = null;
+
+        // ---------- Funções de utilidade ----------
+        function storageId(dayId, suffix){
+            return `${dayId}_${suffix}`; // ex: day_2025_2_15_note
+        }
+
+       function updateArrows() {
+
+    // --- PREV ---
+    if (currentMonth === 0) {
+        prevBtn.style.opacity = "0"; // fade-out
+
+        setTimeout(() => {
+            prevBtn.classList.add("arrow-hidden");
+        }, 250); // mesmo tempo da transição
+    } else {
+        prevBtn.classList.remove("arrow-hidden");
+        requestAnimationFrame(() => {
+            prevBtn.style.opacity = "1"; // fade-in suave
+        });
+    }
+
+    // --- NEXT ---
+    if (currentMonth === 11) {
+        nextBtn.style.opacity = "0";
+
+        setTimeout(() => {
+            nextBtn.classList.add("arrow-hidden");
+        }, 250);
+    } else {
+        nextBtn.classList.remove("arrow-hidden");
+        requestAnimationFrame(() => {
+            nextBtn.style.opacity = "1";
+        });
+    }
+}
+
+        // renderiza o calendário no mês atual
+        function renderCalendar(){
+            grid.innerHTML = "";
+
+            const firstDay = new Date(sysYear, currentMonth, 1).getDay(); // 0 = domingo
+            const lastDate = new Date(sysYear, currentMonth + 1, 0).getDate();
+
+            if (title) title.textContent = `${monthNames[currentMonth]} ${sysYear}`;
+
+            // células vazias antes do primeiro dia
+            for (let i = 0; i < firstDay; i++){
+                const empty = document.createElement("div");
+                empty.classList.add("empty-cell");
+                grid.appendChild(empty);
+            }
+
+            for (let d = 1; d <= lastDate; d++){
+                const day = document.createElement("div");
+                day.textContent = d;
+                day.classList.add("calendar-day");
+                const id = `day_${sysYear}_${currentMonth}_${d}`;
+
+                // aplicar cor salva
+                const savedColor = localStorage.getItem(storageId(id, "color"));
+                if (savedColor) day.classList.add("mark-" + savedColor);
+
+                // destacar dia atual
+                const now = new Date();
+                if (d === now.getDate() && currentMonth === now.getMonth() && sysYear === now.getFullYear()){
+                    day.classList.add("today");
+                }
+
+                day.addEventListener("click", () => {
+                    openNote(id);
+                });
+
+                grid.appendChild(day);
+            }
+
+            updateArrows();
+        }
+
+        // abre o modal da nota com dados salvos (se houver)
+        function openNote(id){
+            window.selectedDay = id;
+            if (!noteModal) return;
+
+            // título do modal (dia de mês)
+            const parts = id.split("_"); // ["day","2025","2","15"]
+            const dayNum = parts[3];
+            const monthIndex = Number(parts[2]);
+            noteTitle.textContent = `${dayNum} de ${monthNames[monthIndex]}`;
+
+            // texto salvo
+            const savedText = localStorage.getItem(storageId(id, "note")) || "";
+            noteText.value = savedText;
+
+            // destacar cor salva
+            const savedColor = localStorage.getItem(storageId(id, "color")) || null;
+            colorButtons.forEach(btn => {
+                const c = btn.dataset.color;
+                btn.classList.toggle("selected", c === savedColor);
+            });
+
+            // mostrar modal
+            noteModal.style.display = "flex";
+            noteModal.setAttribute("aria-hidden", "false");
+            // foco no textarea
+            setTimeout(() => noteText.focus(), 80);
+        }
+
+        // fechar modal
+        function closeNote(){
+            window.selectedDay = null;
+            if (!noteModal) return;
+            noteModal.style.display = "none";
+            noteModal.setAttribute("aria-hidden", "true");
+        }
+
+        // salvar nota no localStorage
+        function saveNote(){
+            const id = window.selectedDay;
+            if (!id) {
+                closeNote();
+                return;
+            }
+            const text = noteText.value || "";
+            localStorage.setItem(storageId(id, "note"), text);
+            closeNote();
+            // re-render para update visual se quiser (não altera cores)
+            renderCalendar();
+        }
+
+        // definir cor para o dia atual selecionado
+        function setColorForSelectedDay(color){
+            const id = window.selectedDay;
+            if (!id) return;
+
+            if (color === "none"){
+                localStorage.removeItem(storageId(id, "color"));
+            } else {
+                localStorage.setItem(storageId(id, "color"), color);
+            }
+
+            // atualizar destaque dos botões
+            colorButtons.forEach(btn => {
+                btn.classList.toggle("selected", btn.dataset.color === color);
+            });
+
+            // re-render do calendário para aplicar a classe ao dia
+            renderCalendar();
+        }
+
+        // ---------- conectar botões de cor ----------
+        colorButtons.forEach(btn => {
+            btn.addEventListener("click", (e) => {
+                const color = btn.dataset.color;
+                // se usuário clicar em X (remove), color === "none"
+                setColorForSelectedDay(color);
+                // manter modal aberto (o usuário pode salvar texto depois)
+            });
+        });
+
+        // salvar e fechar
+        if (saveNoteBtn) saveNoteBtn.addEventListener("click", saveNote);
+        if (closeNoteBtn) closeNoteBtn.addEventListener("click", closeNote);
+
+        // fechar modal clicando fora da caixa
+        noteModal.addEventListener("click", (e) => {
+            if (e.target === noteModal) {
+                closeNote();
+            }
+        });
+
+        // atalhos: ESC fecha modal
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape") {
+                if (noteModal && noteModal.style.display === "flex") closeNote();
+            }
+        });
+
+        // ---------- controles das setas ----------
+        if (prevBtn) prevBtn.addEventListener("click", () => {
+            if (currentMonth > 0) {
+                currentMonth--;
+                renderCalendar();
+            }
+        });
+
+        if (nextBtn) nextBtn.addEventListener("click", () => {
+            if (currentMonth < 11) {
+                currentMonth++;
+                renderCalendar();
+            }
+        });
+
+        // inicializa
+        renderCalendar();
+    });
+    </script>
 </body>
 </html>

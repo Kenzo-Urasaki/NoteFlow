@@ -12,6 +12,40 @@
 	main {
 		background: var(--main-bg);
 	}
+	.config-page {
+    padding: 20px;
+    color: white;
+    font-family: "Montserrat";
+}
+
+.config-user-title {
+    font-size: 38px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.config-user-email {
+    font-size: 20px;
+    opacity: 0.8;
+    margin-bottom: 40px;
+}
+
+.reset-cache-btn {
+    padding: 15px 22px;
+    font-size: 18px;
+    background: linear-gradient(120deg,#7a00ff,#bb00ff);
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    color: white;
+    font-weight: bold;
+    transition: .2s;
+}
+
+.reset-cache-btn:hover {
+    opacity: .8;
+}
+
 </style>
 <body>
 	<div class="layout collapsed" id="layout">
@@ -30,16 +64,24 @@
 
 				<li><a href="inicio.html" data-page="config">Start</a></li>
 				<li><a href="notas.html" data-page="notas">Notes</a></li>
-				<li><a href="semana.html" data-page="semana">Week</a></li>
+				<li><a href="semana.html" data-page="semana">Calendar</a></li>
 				<li><a href="materias.html" data-page="materias">Matter</a></li>
 				<li><a href="metas.html" data-page="metas">Goals</a></li>
 
 			</ul>
 		</nav>
 
-		<main>
+		<main class="config-page">
 
-		</main>
+    <h1 id="configUserTitle" class="config-user-title">Usuário: ...</h1>
+    <h2 id="configUserEmail" class="config-user-email">Email: ...</h2>
+	<h2 id="configUsercont" class="config-user-email"> Contato: ...</h2>
+
+    <button id="resetCacheBtn" class="reset-cache-btn">
+        Resetar Cache do NoteFlow
+    </button>
+
+</main>
 		<footer>
 			© 2025 NoteFlow
 		</footer>
