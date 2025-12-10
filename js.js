@@ -39,7 +39,7 @@ if (fullUser) {
     if (cont) cont.textContent = `Contact: ${fullUser.cont}`;
 }
 
-// =============== RESET COMPLETO ===============
+// ============== RESET COMPLETO ==============
 const resetBtn = document.getElementById("resetCacheBtn");
 
 if (resetBtn) {

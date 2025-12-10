@@ -6,7 +6,7 @@
     font-style: normal;
 }
 
-/* Variáveis globais (valores padrão; páginas podem sobrescrever em :root) */
+/* Variáveis globais (valores padrão; páginas podem sobrescrever em root) */
 :root{
 	--main-bg:linear-gradient(120deg, rgb(40, 16, 63), rgb(40, 16, 63), rgb(0, 0, 0));
 	--nav-expanded-bg: linear-gradient(120deg,#0e0915,#302344,#5b4381);
