@@ -49,7 +49,7 @@
             z-index:2;
             font-family: 'Bigbesty', sans-serif ;
             font-size: 5vh;
-            color: #3c3249;
+            color:#f7d8f7;
         }
         /* nav width will animate */
         nav{
@@ -149,15 +149,13 @@
         }
         nav a:hover{
           background:linear-gradient(120deg,#8D77C0, #5b4381);
-
           color:#f7d8f7;
 
         }
         .brand{font-weight:700}
         .login-btn{
             padding: 10px 20px;
-
-            background: linear-gradient(120deg,#ffffff,#9e5dff);
+            background:#f7d8f7;
             color: #0e0915;
             border-radius: 6px;
             font-size: 14px;
@@ -259,7 +257,7 @@
     box-shadow: 0 0 12px rgba(120,0,255,0.6);
 }
 .user-display {
-    color: #3c3249;
+    color:#f7d8f7;
     font-family: 'bigbesty', sans-serif;
     font-weight: 700;
     font-size: 1.6rem;
