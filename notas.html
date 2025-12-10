@@ -178,7 +178,7 @@ footer {
         }
 
         // ---------------- FUNCTIONS ----------------
-        function renderTabs() {
+function renderTabs() {
             tabsContainer.innerHTML = "";
 
             tabs.forEach((tab, index) => {
@@ -187,7 +187,8 @@ footer {
                 div.contentEditable = true;
                 div.innerText = tab.title || "Untitled";
 
-                // renomear aba (on blur salva também)
+                // 1. RENOMEAR ABA (ON INPUT/BLUR)
+                // Mantém o salvamento do título editado.
                 div.addEventListener("input", () => {
                     tabs[index].title = div.innerText;
                     saveNotes();
@@ -195,11 +196,27 @@ footer {
                 div.addEventListener("blur", () => {
                     tabs[index].title = div.innerText;
                     saveNotes();
+                    // Garante que se o usuário digitou e perdeu o foco, 
+                    // a aba continua sendo a aba ativa de conteúdo.
+                    if (index === currentTab) {
+                        noteContent.focus();
+                    }
                 });
 
-                // trocar de aba (click) — antes salva conteúdo atual
-                div.addEventListener("click", () => {
-                    // salva conteúdo atual
+                // Usa o duplo clique para editar esta area, pois antes estava precisando segurar para editar
+                div.addEventListener("dblclick", (e) => {
+                    div.focus();
+                    e.stopPropagation(); 
+                });
+
+
+
+                div.addEventListener("click", (e) => {
+                    // Se a aba clicada JÁ é a aba ativa:
+                    if (index === currentTab) {
+                        noteContent.focus();
+                        return; 
+                    }
                     if (tabs[currentTab]) tabs[currentTab].content = noteContent.value;
                     currentTab = index;
                     renderTabs();
@@ -210,7 +227,6 @@ footer {
                 tabsContainer.appendChild(div);
             });
         }
-
         function switchTab(index) {
             if (index < 0 || index >= tabs.length) return;
             // salva conteúdo atual antes de mudar
