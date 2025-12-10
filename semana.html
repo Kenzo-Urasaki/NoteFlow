@@ -235,8 +235,8 @@
 			<div class="triangle-indicator"></div>
 			<button class="nav-toggle" id="navToggle" aria-label="Toggle sidebar"></button>
 			<ul>
+            	<li><a href="inicio.html" data-page="Inicio">Start</a></li>
 				<li><a href="notas.html" data-page="notas">Notes</a></li>
-				<li><a href="semana.html" data-page="semana">Calendar</a></li>
 				<li><a href="materias.html" data-page="materias">Matter</a></li>
 				<li><a href="metas.html" data-page="metas">Goals</a></li>
 				<li><a href="config.html" data-page="inicio">Settings</a></li>
@@ -432,22 +432,50 @@
             renderCalendar();
         }
 
-        function setColorForSelectedDay(color){
-            const id = window.selectedDay;
-            if (!id) return;
+       function setColorForSelectedDay(color){
+    const id = window.selectedDay;
+    if (!id) return;
 
-            if (color === "none"){
-                localStorage.removeItem(storageId(id, "color"));
-            } else {
-                localStorage.setItem(storageId(id, "color"), color);
-            }
+    if (color === "none"){
+        localStorage.removeItem(storageId(id, "color"));
+    } else {
+        localStorage.setItem(storageId(id, "color"), color);
+    }
 
-            colorButtons.forEach(btn => {
-                btn.classList.toggle("selected", btn.dataset.color === color);
-            });
+    colorButtons.forEach(btn => {
+        btn.classList.toggle("selected", btn.dataset.color === color);
+    });
 
-            renderCalendar();
+    renderCalendar();
+
+    // ============================================
+    // ATUALIZA LISTA DE DIAS MARCADOS PARA O INÍCIO
+    // ============================================
+
+    // extrair data do ID: day_YYYY_MM_DD
+    const parts = id.split("_");
+    const year = parts[1];
+    const month = Number(parts[2]) + 1;  // +1 para formato humano
+    const day = parts[3];
+
+    // formata como 12/03/2025
+    const formatted = `${day}/${month}/${year}`;
+
+    let list = JSON.parse(localStorage.getItem("noteflow_marked_days")) || [];
+
+    if (color === "none") {
+        // remove da lista
+        list = list.filter(d => d !== formatted);
+    } else {
+        // adiciona se ainda não existir
+        if (!list.includes(formatted)) {
+            list.push(formatted);
         }
+    }
+
+    // salva lista atualizada
+    localStorage.setItem("noteflow_marked_days", JSON.stringify(list));
+}
 
         // ---------- conectar botões de cor ----------
         colorButtons.forEach(btn => {
@@ -501,9 +529,12 @@
             renderCalendar();
         });
 
+           
+
         // inicializa
         renderCalendar();
     });
+
 </script>
 </body>
 </html>

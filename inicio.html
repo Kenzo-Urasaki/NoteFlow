@@ -1,80 +1,343 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>NoteFlow - Início</title>
-	<link rel="stylesheet" href="style.css">
-	<script src="js.js" defer></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NoteFlow - Início</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="js.js" defer></script>
 </head>
 <style>
 
-	@font-face {
-    /* Nome que você usará para chamar a fonte nos seus seletores */
-    font-family: 'Sprayerz DEMO'; 
-    
-    /* O caminho até o arquivo.ttf. Ajuste o 'fonts/' se necessário! */
-    src: url('SprayerzDEMO-B85.ttf') format('truetype'); 
-    
-    /* Defina as propriedades: */
-    font-weight: normal; 
-    font-style: normal;
-    
-    /* Ajuda o navegador a exibir texto fallback enquanto a fonte carrega */
-    font-display: swap; 
+body {font-family: 'Montserrat', sans-serif;
 }
 
+    h1 {
+        font-size: 11vw;
+        color: #f7d8f7;
+        margin: 0;
+        text-align: center;
+    }
 
-body {
-    width: 100vw; 
-    height: 100vh;
-    margin: 0;
+    /* Containers da Home */
+    .home-wrapper {
+        width: 90%;
+        max-width: 1000px;
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+        margin: 40px auto;
+    }
+
+    .box {
+        width: 100%;
+        background: #111;
+        border-radius: 14px;
+        padding: 20px;
+        color: white;
+        box-shadow: 0 0 8px #f7d8f733;
+    }
+
+    .box-title {
+        font-size: 1.4rem;
+        margin-bottom: 10px;
+        font-weight: bold;
+        color: #f0c6f0;
+    }
+
+    /* Lista de dias marcados */
+    .marked-days-list p {
+        margin: 6px 0;
+        font-size: 1rem;
+        opacity: 0.8;
+    }
+
+    /* Metas com porcentagem */
+    .goals-container {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .goal-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: #1a1a1a;
+        padding: 15px;
+        border-radius: 10px;
+    }
+
+    .goal-title {
+        font-size: 0.9rem;
+        margin-bottom: 5px;
+        color: #e8b9e8;
+    }
+
+    .goal-circle {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        border: 3px solid #e3a7e3;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 1rem;
+        font-weight: bold;
+    }
+
+    /* Materias */
+    .subjects-container p {
+        margin: 8px 0;
+        font-size: 1rem;
+    }
+	/* --- LAYOUT EM DUAS COLUNAS --- */
+
+/* Caixa da mensagem */
+/* Forçar os itens nas colunas certas */
+.left-col {
+    grid-column: 1;
+}
+
+.welcome-box {
+    grid-column: 2;
+}
+
+.right-col {
+    grid-column: 3;
+}
+
+/* deixar espaço entre dias e matérias */
+.left-col {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column; 
-    background-color: black; 
+    flex-direction: column;
+    gap: 50px;
+    margin-top: 50px;
 }
 
-h1 {
-    font-size: 11vw;
-    font-family: 'Sprayerz Demo', cursive; 
-    color:#f7d8f7; 
-    margin: 0; 
-    text-align: center;
+/* coluna direita desce também */
+.right-col {
+    margin-top: 50px;
 }
+
+/* mensagem afastada */
+.welcome-box {
+    padding: 40px 0;
+    margin-top: 30px;
+}
+
+
+
+
+
+/* Texto da mensagem */
+#welcomeMessage {
+    font-size: 2.6rem;
+    color: #f7d8f7;
+	font-family: 'Bigbesty', cursive;
+    text-shadow: 0 0 10px #f7d8f766;
+    margin: 0;
+}
+
+/* Ajuste: transforma layout em 3 colunas */
+.home-columns {
+    width: 95%;
+    max-width: 1200px;
+    margin: 40px auto;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;  
+    gap: 150px;
+	padding: 30px ;
+}
+
+/* Mobile: remove coluna do meio */
+@media (max-width: 800px) {
+    .home-columns {
+        grid-template-columns: 1fr;
+    }
+
+    .welcome-box {
+        order: -1;
+        margin-bottom: 20px;
+    }
+
+    #welcomeMessage {
+        font-size: 2rem;
+    }
+}
+
 
 </style>
 <body>
-	<div class="layout collapsed" id="layout">
-			<header>
-			<div class="brand">NoteFlow</div>
-			<div id="userNameDisplay" class="user-display"></div>
+    <div class="layout collapsed" id="layout">
+        <header>
+            <div class="brand">NoteFlow</div>
+            <div id="userNameDisplay" class="user-display"></div>
+            <a class="login-btn" id="loginBtn" href="login.html">Create Account</a>
+        </header>
 
-			<a class="login-btn" id="loginBtn" href="login.html">Create Account</a>
+        <nav id="sidebar">
+            <div class="triangle-indicator"></div>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle sidebar"></button>
+            <ul>
+                <li><a href="notas.html" data-page="notas">Notes</a></li>
+                <li><a href="semana.html" data-page="semana">Calendar</a></li>
+                <li><a href="materias.html" data-page="materias">Matter</a></li>
+                <li><a href="metas.html" data-page="metas">Goals</a></li>
+                <li><a href="config.html" data-page="inicio">Settings</a></li>
+            </ul>
+        </nav>
 
-		</header>
+     <main>
+    <div class="home-columns">
 
-		<nav id="sidebar">
-			<div class="triangle-indicator"></div>
-			<button class="nav-toggle" id="navToggle" aria-label="Toggle sidebar"></button>
-			<ul>
-				<li><a href="notas.html" data-page="notas">Notes</a></li>
-				<li><a href="semana.html" data-page="semana">Calendar</a></li>
-				<li><a href="materias.html" data-page="materias">Matter</a></li>
-				<li><a href="metas.html" data-page="metas">Goals</a></li>
-				<li><a href="config.html" data-page="inicio">Settings</a></li>
+        <!-- COLUNA ESQUERDA -->
+        <div class="left-col">
 
-			</ul>
-		</nav>
+            <!-- DIAS MARCADOS -->
+            <div class="box">
+                <div class="box-title">Marked Days</div>
+                <div class="marked-days-list" id="markedDaysList">
+                    <p>Loading...</p>
+                </div>
+            </div>
 
-		<main>
-			<h1>Welcome to your study website 	</h1>
-		</main>
+            <!-- MATÉRIAS -->
+            <div class="box">
+                <div class="box-title">Subjects</div>
+                <div class="subjects-container" id="subjectsContainer">
+                    <p>Loading subjects...</p>
+                </div>
+            </div>
 
-		<footer>
-			© 2025 NoteFlow
-		</footer>
-	</div>
+        </div>
+
+        <!-- FRASE CENTRAL -->
+        <div class="welcome-box">
+            <h1 id="welcomeMessage">Bem-vindo!</h1>
+        </div>
+
+        <!-- COLUNA DIREITA -->
+        <div class="right-col">
+
+            <!-- METAS -->
+            <div class="box">
+                <div class="box-title">Goals Progress</div>
+                <div class="goals-container" id="goalsContainer">
+                    <p>Loading goals...</p>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</main>
+
+
+
+        <footer>
+            © 2025 NoteFlow
+        </footer>
+    </div>
+	<script>
+// =========================================
+// 🔵 1 — DIAS MARCADOS
+// =========================================
+(function loadMarkedDays() {
+    const container = document.getElementById("markedDaysList");
+    const days = JSON.parse(localStorage.getItem("noteflow_marked_days")) || [];
+
+    container.innerHTML = "";
+
+    if (days.length === 0) {
+        container.innerHTML = "<p>No marked days.</p>";
+        return;
+    }
+
+    days.forEach(day => {
+        const p = document.createElement("p");
+        p.textContent = `• ${day}`;
+        container.appendChild(p);
+    });
+})();
+
+
+// =========================================
+// 🎯 2 — METAS + PORCENTAGEM DE CONCLUSÃO
+// =========================================
+(function loadGoals() {
+    const container = document.getElementById("goalsContainer");
+    const goals = JSON.parse(localStorage.getItem("noteflow_goals")) || [];
+
+    container.innerHTML = "";
+
+    if (goals.length === 0) {
+        container.innerHTML = "<p>No goals.</p>";
+        return;
+    }
+
+    goals.forEach(goal => {
+        const item = document.createElement("div");
+        item.className = "goal-item";
+
+        // calcula porcentagem
+       // calcula porcentagem usando "subgoals" (como salvo no metas.html)
+let percent = 0;
+const list = goal.subgoals || [];
+
+if (list.length > 0) {
+    const done = list.filter(s => s.done).length;
+    percent = Math.round((done / list.length) * 100);
+}
+
+
+        item.innerHTML = `
+            <div>
+                <div class="goal-title">${goal.title}</div>
+            </div>
+
+            <div class="goal-circle">${percent}%</div>
+        `;
+
+        container.appendChild(item);
+    });
+})();
+
+
+// =========================================
+// 📘 3 — MATÉRIAS + QUANTIDADE DE ASSUNTOS
+// =========================================
+(function loadSubjects() {
+    const container = document.getElementById("subjectsContainer");
+    const subjects = JSON.parse(localStorage.getItem("noteflow_subjects")) || [];
+
+    container.innerHTML = "";
+
+    if (subjects.length === 0) {
+        container.innerHTML = "<p>No subjects.</p>";
+        return;
+    }
+
+    subjects.forEach(sub => {
+        const p = document.createElement("p");
+
+        const count = sub.topics ? sub.topics.length : 0;
+
+        p.textContent = `${sub.name} — ${count} topics`;
+        container.appendChild(p);
+    });
+})();
+
+(function loadUserNameMessage() {
+    const msg = document.getElementById("welcomeMessage");
+
+    const user = JSON.parse(localStorage.getItem("noteflow_user")) || {};
+    const name = user.name || "Usuario";
+
+    msg.textContent = `Bem-vindo, ${name}`;
+})();
+
+</script>
+
 </body>
 </html>
