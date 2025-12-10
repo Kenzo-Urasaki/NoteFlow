@@ -6,8 +6,47 @@
 	<title>NoteFlow - Início</title>
 	<link rel="stylesheet" href="style.css">
 	<script src="js.js" defer></script>
-
 </head>
+<style>
+
+	@font-face {
+    /* Nome que você usará para chamar a fonte nos seus seletores */
+    font-family: 'Sprayerz DEMO'; 
+    
+    /* O caminho até o arquivo.ttf. Ajuste o 'fonts/' se necessário! */
+    src: url('SprayerzDEMO-B85.ttf') format('truetype'); 
+    
+    /* Defina as propriedades: */
+    font-weight: normal; 
+    font-style: normal;
+    
+    /* Ajuda o navegador a exibir texto fallback enquanto a fonte carrega */
+    font-display: swap; 
+}
+
+
+body {
+
+    width: 100vw; 
+    height: 100vh;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column; 
+    background-color: black; 
+}
+
+h1 {
+
+    font-size: 11vw;
+    font-family: 'Sprayerz Demo', cursive; 
+    color: white; 
+    margin: 0; 
+    text-align: center;
+}
+
+</style>
 <body>
 	<div class="layout collapsed" id="layout">
 			<header>
@@ -32,6 +71,7 @@
 		</nav>
 
 		<main>
+			<h1>Welcome to your study website 	</h1>
 		</main>
 
 		<footer>
