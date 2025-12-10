@@ -37,14 +37,14 @@ const email = document.getElementById("configUserEmail");
 const cont = document.getElementById("configUsercont");
 
 if (title && userName) {
-    title.textContent = `Usuário: ${userName}`;
+    title.textContent = `User: ${userName}`;
 }
 
 if (email && userEmail) {
     email.textContent = `Email: ${userEmail}`;
 }
 if (cont && usercont) {
-    cont.textContent = `Contato: ${usercont}`;
+    cont.textContent = `Contact: ${usercont}`;
 }
 
 const resetBtn = document.getElementById("resetCacheBtn");
