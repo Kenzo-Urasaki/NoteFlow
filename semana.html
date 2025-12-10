@@ -284,10 +284,14 @@
 		</footer>
 	</div>
 <script>
-    // ---------- Script completo do calendário + modal ----------
+    // ---------- Script completo do calendário + modal (CORRIGIDO) ----------
     document.addEventListener("DOMContentLoaded", () => {
-        const sysYear = new Date().getFullYear();
-        let currentMonth = new Date().getMonth(); // 0..11
+        
+        const sysDate = new Date();
+        // 1. Variável let sysYear para permitir a mudança de ano
+        let sysYear = sysDate.getFullYear();
+        const initialMonth = sysDate.getMonth(); 
+        let currentMonth = initialMonth;         
 
         const title = document.getElementById("calendarTitle");
         const grid = document.getElementById("calendarGrid");
@@ -312,44 +316,39 @@
 
         // ---------- Funções de utilidade ----------
         function storageId(dayId, suffix){
-            return `${dayId}_${suffix}`; // ex: day_2025_2_15_note
+            return `${dayId}_${suffix}`; 
         }
 
-       function updateArrows() {
+        function updateArrows() {
 
-    // --- PREV ---
-    if (currentMonth === 0) {
-        prevBtn.style.opacity = "0"; // fade-out
+            // --- PREV ---
+            // CORREÇÃO: Esconde o botão se for o Mês Inicial E o Ano Inicial
+            if (sysYear === sysDate.getFullYear() && currentMonth === initialMonth) {
+                prevBtn.style.opacity = "0"; 
 
-        setTimeout(() => {
-            prevBtn.classList.add("arrow-hidden");
-        }, 250); // mesmo tempo da transição
-    } else {
-        prevBtn.classList.remove("arrow-hidden");
-        requestAnimationFrame(() => {
-            prevBtn.style.opacity = "1"; // fade-in suave
-        });
-    }
+                setTimeout(() => {
+                    prevBtn.classList.add("arrow-hidden");
+                }, 250); 
+            } else {
+                prevBtn.classList.remove("arrow-hidden");
+                requestAnimationFrame(() => {
+                    prevBtn.style.opacity = "1"; 
+                });
+            }
 
-    // --- NEXT ---
-    if (currentMonth === 11) {
-        nextBtn.style.opacity = "0";
-
-        setTimeout(() => {
-            nextBtn.classList.add("arrow-hidden");
-        }, 250);
-    } else {
-        nextBtn.classList.remove("arrow-hidden");
-        requestAnimationFrame(() => {
-            nextBtn.style.opacity = "1";
-        });
-    }
-}
+            // --- NEXT ---
+            // Permite ir para o próximo ano (não esconde a seta)
+            nextBtn.classList.remove("arrow-hidden");
+            requestAnimationFrame(() => {
+                nextBtn.style.opacity = "1";
+            });
+        }
 
         // renderiza o calendário no mês atual
         function renderCalendar(){
             grid.innerHTML = "";
 
+            // O calendário usa sysYear e currentMonth (que mudam)
             const firstDay = new Date(sysYear, currentMonth, 1).getDay(); // 0 = domingo
             const lastDate = new Date(sysYear, currentMonth + 1, 0).getDate();
 
@@ -366,6 +365,7 @@
                 const day = document.createElement("div");
                 day.textContent = d;
                 day.classList.add("calendar-day");
+                
                 const id = `day_${sysYear}_${currentMonth}_${d}`;
 
                 // aplicar cor salva
@@ -388,36 +388,31 @@
             updateArrows();
         }
 
-        // abre o modal da nota com dados salvos (se houver)
+        // ... (Funções openNote, closeNote, saveNote, setColorForSelectedDay - SEM ALTERAÇÃO) ...
+        
         function openNote(id){
             window.selectedDay = id;
             if (!noteModal) return;
 
-            // título do modal (dia de mês)
-            const parts = id.split("_"); // ["day","2025","2","15"]
+            const parts = id.split("_");
             const dayNum = parts[3];
             const monthIndex = Number(parts[2]);
             noteTitle.textContent = `${dayNum} de ${monthNames[monthIndex]}`;
 
-            // texto salvo
             const savedText = localStorage.getItem(storageId(id, "note")) || "";
             noteText.value = savedText;
 
-            // destacar cor salva
             const savedColor = localStorage.getItem(storageId(id, "color")) || null;
             colorButtons.forEach(btn => {
                 const c = btn.dataset.color;
                 btn.classList.toggle("selected", c === savedColor);
             });
 
-            // mostrar modal
             noteModal.style.display = "flex";
             noteModal.setAttribute("aria-hidden", "false");
-            // foco no textarea
             setTimeout(() => noteText.focus(), 80);
         }
 
-        // fechar modal
         function closeNote(){
             window.selectedDay = null;
             if (!noteModal) return;
@@ -425,7 +420,6 @@
             noteModal.setAttribute("aria-hidden", "true");
         }
 
-        // salvar nota no localStorage
         function saveNote(){
             const id = window.selectedDay;
             if (!id) {
@@ -435,11 +429,9 @@
             const text = noteText.value || "";
             localStorage.setItem(storageId(id, "note"), text);
             closeNote();
-            // re-render para update visual se quiser (não altera cores)
             renderCalendar();
         }
 
-        // definir cor para o dia atual selecionado
         function setColorForSelectedDay(color){
             const id = window.selectedDay;
             if (!id) return;
@@ -450,12 +442,10 @@
                 localStorage.setItem(storageId(id, "color"), color);
             }
 
-            // atualizar destaque dos botões
             colorButtons.forEach(btn => {
                 btn.classList.toggle("selected", btn.dataset.color === color);
             });
 
-            // re-render do calendário para aplicar a classe ao dia
             renderCalendar();
         }
 
@@ -463,9 +453,7 @@
         colorButtons.forEach(btn => {
             btn.addEventListener("click", (e) => {
                 const color = btn.dataset.color;
-                // se usuário clicar em X (remove), color === "none"
                 setColorForSelectedDay(color);
-                // manter modal aberto (o usuário pode salvar texto depois)
             });
         });
 
@@ -489,22 +477,33 @@
 
         // ---------- controles das setas ----------
         if (prevBtn) prevBtn.addEventListener("click", () => {
-            if (currentMonth > 0) {
+            // CORREÇÃO: Só permite voltar se o ano for maior que o ano atual 
+            // OU se for o ano atual e o mês for maior que o mês inicial.
+            if (sysYear > sysDate.getFullYear() || 
+               (sysYear === sysDate.getFullYear() && currentMonth > initialMonth)) 
+            {
                 currentMonth--;
+                if (currentMonth < 0) {
+                    currentMonth = 11;
+                    sysYear--;
+                }
                 renderCalendar();
             }
         });
 
         if (nextBtn) nextBtn.addEventListener("click", () => {
-            if (currentMonth < 11) {
-                currentMonth++;
-                renderCalendar();
+            // Avança o ano se passar de Dezembro
+            currentMonth++;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                sysYear++;
             }
+            renderCalendar();
         });
 
         // inicializa
         renderCalendar();
     });
-    </script>
+</script>
 </body>
 </html>
