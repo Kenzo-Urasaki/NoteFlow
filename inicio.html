@@ -214,7 +214,7 @@ body {font-family: 'Montserrat', sans-serif;
 
         <!-- FRASE CENTRAL -->
         <div class="welcome-box">
-            <h1 id="welcomeMessage">Bem-vindo!</h1>
+            <h1 id="welcomeMessage">Welcome</h1>
         </div>
 
         <!-- COLUNA DIREITA -->
@@ -332,9 +332,9 @@ if (list.length > 0) {
     const msg = document.getElementById("welcomeMessage");
 
     const user = JSON.parse(localStorage.getItem("noteflow_user")) || {};
-    const name = user.name || "Usuario";
+    const name = user.name || "User";
 
-    msg.textContent = `Bem-vindo, ${name}`;
+    msg.textContent = `Welcome, ${name}`;
 })();
 
 </script>
