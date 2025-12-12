@@ -57,3 +57,18 @@ if (resetBtn) {
         }
     };
 }
+const user = {
+    name: document.getElementById("name").value,
+    cont: document.getElementById("cont").value,
+    email: document.getElementById("email").value,
+    password: document.getElementById("password").value,
+    // Novos 8 campos
+    date_birth: document.getElementById("date_birth").value,
+    city: document.getElementById("city").value,
+    country: document.getElementById("country").value,
+    occupation: document.getElementById("occupation").value,
+    timezone: document.getElementById("timezone").value,
+    bio: document.getElementById("bio").value,
+    weekly_goal: document.getElementById("weekly_goal").value,
+    newsletter: document.getElementById("newsletter").checked ? 'Sim' : 'Não'
+};

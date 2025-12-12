@@ -54,7 +54,7 @@ input, textarea, select, button {
   flex-direction: column;
 }
 
-/* impede inputs de estourarem o flex */
+
 .campo input {
   min-width: 0;
 }
@@ -87,7 +87,7 @@ button:hover {
   .top-nav {
   display: flex;
   gap: 12px;
-  justify-content: flex-end; /* ajusta conforme quiser */
+  justify-content: flex-end;
   margin-bottom: 18px;
 }
 
@@ -130,24 +130,82 @@ button:hover {
     <form id="formulario">
         <h2>C R E A T E<br>A C C O U N T</h2>
 
-        <div class="campo">
-            <label for="name">N A M E</label>
-            <input type="text" id="name" name="name" required>
+        <div class="linha">
+            <div class="campo">
+                <label for="name">N A M E</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+
+            <div class="campo">
+                <label for="cont">C O N T A C T</label>
+                <input type="text" id="cont" name="cont" maxlength="15" required>
+            </div>
         </div>
 
-        <div class="campo">
-            <label for="cont">C O N T A C T</label>
-            <input type="text" id="cont" name="cont" maxlength="15" required>
+        <div class="linha">
+            <div class="campo">
+                <label for="email">E - M A I L</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+
+            <div class="campo">
+                <label for="password">P A S S W O R D</label>
+                <input type="password" id="password" name="password" required>
+            </div>
         </div>
 
-        <div class="campo">
-            <label for="email">E - M A I L</label>
-            <input type="email" id="email" name="email" required>
+        <div class="linha">
+            <div class="campo">
+                <label for="date_birth">B I R T H D A Y</label>
+                <input type="date" id="date_birth" name="date_birth" required>
+            </div>
+
+            <div class="campo">
+                <label for="city">C I T Y</label>
+                <input type="text" id="city" name="city" required>
+            </div>
+
+            <div class="campo">
+                <label for="country">C O U N T R Y</label>
+                <select id="country" name="country" required>
+                    <option value="" disabled selected>Selecione</option>
+                    <option value="br">Brasil</option>
+                    <option value="pt">Portugal</option>
+                    <option value="us">Estados Unidos</option>
+                    <option value="ca">Canadá</option>
+                </select>
+            </div>
         </div>
 
+        <div class="linha">
+            <div class="campo">
+                <label for="occupation">O C C U P A T I O N</label>
+                <input type="text" id="occupation" name="occupation" required>
+            </div>
+
+            <div class="campo">
+                <label for="timezone">T I M E Z O N E</label>
+                <input type="text" id="timezone" name="timezone" placeholder="Ex: UTC-3" required>
+            </div>
+        </div>
+        
         <div class="campo">
-            <label for="password">P A S S W O R D</label>
-            <input type="password" id="password" name="password" required>
+            <label for="bio">B I O</label>
+            <textarea id="bio" name="bio" rows="3" placeholder="Conte-nos um pouco sobre você..." required></textarea>
+        </div>
+
+        <div class="linha">
+            <div class="campo">
+                <label for="weekly_goal">W E E K L Y - O B J E C T I V E S</label>
+                <input type="number" id="weekly_goal" name="weekly_goal" min="1" max="168" placeholder="Ex: 10" required>
+            </div>
+
+            <div class="campo" style="justify-content: flex-end; align-items: flex-start; margin-top: 10px;">
+                <label style="display: flex; align-items: center; gap: 8px; color: white;">
+                    <input type="checkbox" id="newsletter" name="newsletter" style="width: auto; height: 16px;" value="yes">
+                    <span>R E C E I V E - N E W S L E T T E R</span>
+                </label>
+            </div>
         </div>
 
         <button type="submit">R E D E E M</button>
@@ -166,20 +224,31 @@ document.getElementById("formulario").addEventListener("submit", function(e) {
         name: document.getElementById("name").value,
         cont: document.getElementById("cont").value,
         email: document.getElementById("email").value,
-        password: document.getElementById("password").value
+        password: document.getElementById("password").value,
+        
+        date_birth: document.getElementById("date_birth").value,
+        city: document.getElementById("city").value,
+        country: document.getElementById("country").value,
+        occupation: document.getElementById("occupation").value,
+        timezone: document.getElementById("timezone").value,
+        bio: document.getElementById("bio").value,
+        weekly_goal: document.getElementById("weekly_goal").value,
+        newsletter: document.getElementById("newsletter").checked ? 'Sim' : 'Não'
     };
 
-    // salvar tudo junto
+    
     localStorage.setItem("noteflow_user", JSON.stringify(user));
 
-    // salvar separado (usado na página de configurações)
     localStorage.setItem("noteflow_user_name", user.name);
     localStorage.setItem("noteflow_user_email", user.email);
     localStorage.setItem("noteflow_user_cont", user.cont);
+    localStorage.setItem("noteflow_user_city", user.city);
+    localStorage.setItem("noteflow_user_country", user.country);
+    localStorage.setItem("noteflow_user_timezone", user.timezone);
     
 
     alert("Conta criada com sucesso!");
-
+                         
     window.location.href = "inicio.html";
 });
 </script>
